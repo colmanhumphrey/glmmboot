@@ -2,8 +2,8 @@ Package: glmmboot
 Type: Package
 Title: Bootstrap Resampling for Mixed Effects Models
 Version: 0.1.0
-Author: Colman Humphrey
-Maintainer: Colman Humphrey <humphrc@tcd.ie>
+Authors@R: person("Colman", "Humphrey", email = "humphrc@tcd.ie",
+  role = c("aut", "cre"))
 Description: Small package that performs bootstrap resampling for mixed effects
     models, and more generally nearly all models that 'update' works for. There
     are two main functions: BootGlmm performs block resampling if random effects
@@ -11,6 +11,7 @@ Description: Small package that performs bootstrap resampling for mixed effects
     bootstrap model runs into confidence intervals and p-values. By default,
     BootGlmm calls BootCI. 
 License: What license is it under?
+URL: https://github.com/ColmanHumphrey/glmmboot
 Encoding: UTF-8
 LazyData: true
 Suggests: glmmTMB (>= 0.2.1),

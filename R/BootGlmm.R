@@ -2,7 +2,7 @@
 #' stores estimates + SEs.
 #'
 #' By default, this will compute bootstrap resamples and then send them to BootCI
-#' for calcuation. Note - only use parallel methods if your
+#' for calculation. Note - only use parallel methods if your
 #' model is expensive to build, otherwise the overhead won't be worth it.
 #'
 #' @import methods
@@ -273,7 +273,7 @@ DetectCores <- function(){
     }
 }       
 
-#' Calcuate Shannon Entropy
+#' Calculate Shannon Entropy
 #' @keywords internal
 CalcEntropy <- function(level_vector){
     freq_as_prob <- table(level_vector) / length(level_vector)

@@ -59,7 +59,7 @@ GenResamplingIndex <- function(orig_list,
     return(all_ind)
 }
 
-#' this takes in a formual with bars
+#' this takes in a formula with bars
 #' and gives back the plain names of the columns
 #'
 #' @param form_with_bars

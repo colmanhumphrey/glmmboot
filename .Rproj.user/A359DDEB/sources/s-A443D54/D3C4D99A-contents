@@ -62,11 +62,11 @@ entropy random effect - but there's only one, so of course the winner is `subj`.
 
 ```{r, cache=TRUE}
 bootstrap_over_subj <- BootGlmm(base_model = base_run,
-                                resamples = 999, 
+                                resamples = 99, 
                                 num_cores = 4)
 ```
-For publications etc, better to run about ten thousand resamples than one thousand, to avoid
-noise having much of an effect.
+For publications etc, better to run about ten thousand resamples to avoid
+noise having much of an effect. Of course 99 is far too small, only for an example.
 
 And comparing results:
 ```{r, cache=TRUE}
@@ -79,15 +79,15 @@ output the fully processed output, only the intermediate outcome. To do this,
 we set `return_coefs_instead = TRUE` for each run:
 ```{r, cache=TRUE}
 b_list1 <- BootGlmm(base_model = base_run,
-                    resamples = 99, 
+                    resamples = 29, 
                     num_cores = 1,
                     return_coefs_instead = TRUE)
 b_list2 <- BootGlmm(base_model = base_run,
-                    resamples = 100, 
+                    resamples = 30, 
                     num_cores = 1,
                     return_coefs_instead = TRUE)
 b_list3 <- BootGlmm(base_model = base_run,
-                    resamples = 100, 
+                    resamples = 30, 
                     num_cores = 1,
                     return_coefs_instead = TRUE)
 ```

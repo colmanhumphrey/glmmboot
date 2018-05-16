@@ -1,5 +1,9 @@
 #' computes bootstrap resamples of your data,
-#' stores estimates + SEs
+#' stores estimates + SEs.
+#'
+#' By default, this will compute bootstrap resamples and then send them to BootCI
+#' for calcuation. Note - only use parallel methods if your
+#' model is expensive to build, otherwise the overhead won't be worth it. 
 #'
 #' @param base_model
 #'   The pre-bootstrap model, i.e. the model output
@@ -32,6 +36,11 @@
 #'   resample over specific random effects as blocks, enter
 #'   the names here - can be one, or many. Note that resampling
 #'   multiple blocks is in general quite conservative.
+#'
+#'   If you want to perform case resampling but you do have
+#'   random effects, set resample_specific_blocks to any
+#'   non-null value that does not contain any random effect
+#'   variable names.
 #'
 #' @param base_data
 #'   Default NULL; only needed if it can't be extracted
@@ -72,11 +81,22 @@
 #'   to run this function in a distributed way.
 #'
 #' @examples
-#'   attach(test_data)
-#'   test_model <- glmmTMB(y ~ x + (1 | some_RE), data = test_data, family = binomial)
+#' x <- rnorm(20)
+#' y <- rnorm(20) + x
+#' first_model <- lm(y ~ x)
+#'
+#' out_matrix <- BootGlmm(first_model, 20)
+#' out_list <- BootGlmm(first_model, 20, return_coefs_instead = TRUE)
+#' 
+#' \dontrun{
+#'   data(test_data)
+#'   library(glmmTMB)
+#'   test_formula <- as.formula('y ~ x_var1 + x_var2 + x_var3 + (1|subj)')
+#'   test_model <- glmmTMB(test_formula, data = test_data, family = binomial)
 #'   output_matrix <- BootGlmm(test_model, 399)
 #'  
-#'   output_lists <- BootGlmm(test_model, 399, returns_coefs_instead = TRUE)
+#'   output_lists <- BootGlmm(test_model, 399, return_coefs_instead = TRUE)
+#' }
 BootGlmm <- function(base_model,
                      resamples = 9999,
                      return_coefs_instead = FALSE,
@@ -112,8 +132,7 @@ BootGlmm <- function(base_model,
         } else if('frame' %in% slotNames(base_model)){
             base_data <- base_model@frame
         } else {
-            stop('Other dataframe extraction methods not implemented, please file an issue,
-or supply data as base_data to this function')
+            stop('Other dataframe extraction methods not implemented, please file an issue, or supply data as base_data to this function')
         }
     }
 

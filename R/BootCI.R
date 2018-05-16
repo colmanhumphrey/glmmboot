@@ -40,12 +40,21 @@
 #'   Relative width of bootstrap interval to base
 #'
 #' @examples
-#'   attach(test_data)
+#' x <- rnorm(20)
+#' y <- rnorm(20) + x
+#' first_model <- lm(y ~ x)
+#' out_list <- BootGlmm(first_model, 20, return_coefs_instead = TRUE)
+#' BootCI(out_list$base_coef_se,
+#'        out_list$resampled_coef_se)
+#' 
+#' \dontrun{
+#'   data(test_data)
+#'   library(glmmTMB)
 #'   test_model <- glmmTMB(y ~ x + (1 | some_RE), data = test_data, family = binomial)
-#'   output_lists <- BootGlmm(test_model, 399, returns_coefs_instead = TRUE)
+#'   output_lists <- BootGlmm(test_model, 399, return_coefs_instead = TRUE)
 #'   BootCI(output_lists$base_coef_se,
 #'          output_lists$resampled_coef_se)
-#' 
+#' }
 BootCI <- function(base_coef_se = NULL,
                    resampled_coef_se = NULL,
                    orig_df = NULL,
@@ -148,7 +157,9 @@ BootCI <- function(base_coef_se = NULL,
 #'   all resamples) if return_combined_list = TRUE
 #'
 #' @examples
-#'   attach(test_data)
+#' \dontrun{
+#'   data(test_data)
+#'   library(glmmTMB)
 #'   test_model <- glmmTMB(y ~ x + (1 | some_RE), data = test_data, family = binomial)
 #'   output_list1 <- BootGlmm(test_model, 99, return_coefs_instead = TRUE)
 #'   output_list2 <- BootGlmm(test_model, 100, return_coefs_instead = TRUE)
@@ -173,7 +184,8 @@ BootCI <- function(base_coef_se = NULL,
 #'   boot_ci1 <- CombineResampledLists(reg_list)
 #'   full_list <- CombineResampledLists(reg_list, return_combined_list = TRUE)
 #'   boot_ci2 <- BootCI(full_list$base_coef_se, full_list$resampled_coef_se)
-#'   identical(boot_ci1, boot_ci2)  
+#'   identical(boot_ci1, boot_ci2)
+#' }
 CombineResampledLists <- function(...,
                                   return_combined_list = FALSE){
     input_lists <- list(...)

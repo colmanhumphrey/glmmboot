@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526494586837.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1362077889",
+    "id" : "EA08DD",
+    "lastKnownWriteTime" : 1526497537,
+    "last_content_update" : 1526497537810,
+    "path" : "~/Documents/Stats/R_packages/glmmboot/README.Rmd",
+    "project_path" : "README.Rmd",
+    "properties" : {
+        "cursorPosition" : "27,20",
+        "scrollLine" : "10"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526497555760.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "558310982",
+    "id" : "D3C4D99A",
+    "lastKnownWriteTime" : 1526497574,
+    "last_content_update" : 1526497574564,
+    "path" : "~/Documents/Stats/R_packages/glmmboot/vignettes/quick_use.Rmd",
+    "project_path" : "vignettes/quick_use.Rmd",
+    "properties" : {
+        "cursorPosition" : "2,24",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

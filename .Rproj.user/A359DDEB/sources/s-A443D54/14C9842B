@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1526493372562.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3460970345",
+    "id" : "14C9842B",
+    "lastKnownWriteTime" : 1526492590,
+    "last_content_update" : 1526492590,
+    "path" : "~/Documents/Stats/R_packages/glmmboot/man/BootGlmm.Rd",
+    "project_path" : "man/BootGlmm.Rd",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_doc"
+}

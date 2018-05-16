@@ -38,8 +38,40 @@ devtools::install_github("ColmanHumphrey/glmmboot")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+We'll provide a quick example using glm. First we'll set up some data:
 
-```{r example}
-## basic example code
+```{r}
+x1 <- rnorm(50)
+x2 <- runif(50)
+
+expit <- function(x){exp(x) / (1 + exp(x))}
+
+y_mean <- expit(0.2 - 0.3 * x1 + 0.4 * x2)
+
+y <- rbinom(50, 1, prob = y_mean)
 ```
+
+Typically this model is fit with logistic regression:
+
+```{r}
+base_run <- glm(y ~ x1 + x2, family = binomial(link = 'logit'))
+
+summary(base_run)
+```
+
+Let's run a bootstrap. We'll set `num_cores = 1` because the model
+is small - parallel overhead is too expensive here.
+
+```{r}
+library(glmmboot)
+boot_results <- BootGlmm(base_model = base_run, resamples = 999, num_cores = 1)
+```
+
+And the results:
+```{r}
+print(boot_results)
+```
+
+The estimates are the same, since we just pull from the base model. The intervals are 
+similar to the base model, although slightly narrower: typical logistic regression is fractionally
+conservative at `N = 50`.

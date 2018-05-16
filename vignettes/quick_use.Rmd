@@ -14,8 +14,99 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+knitr::opts_chunk$set(cache=TRUE)
+knitr::opts_knit$set(cache.extra = 234) # seed
 ```
 
+For even quicker usage instructions, see the readme.
+
+The general idea of this package is that you can throw nearly any 
+model built in the typical R fashion. For now, we just need 
+a somewhat standard way of extracting fixed effects, and that
+`update` works, which is nearly always the case. 
+
+If your model is called `base_model` for example, then 
+if `coef(summary(base_model))` or `coef(summary(base_model))$cond`
+gives the estimates and standard errors, the method will work.
+
+Further, if the dataframe that creates the model is accessible from
+`base_model$model`, `base_model$frame` or `base_model@frame`, you 
+won't have to send the data in to the function separately. 
+
+Let's work through an example with `glmmTMB`. We'll use the data
+that comes with `glmmboot`.
+
+```{r, cache=TRUE}
+library(glmmboot)
+data(test_data)
+
+head(test_data)
+```
+
+We're assuming the `x_var` variables are fixed, and `subj` is to be treated as a random effect.
+
+Thus our base analysis is:
+
+```{r, cache=TRUE}
+library(glmmTMB)
+model_formula <- as.formula(y ~ x_var1 + x_var2 + x_var2 + (1 | subj))
+
+base_run <- glmmTMB(formula = model_formula,
+                    data = test_data,
+                    family = binomial)
+```
+We get a warning because the outcome data is proportional. Not to worry.
+
+Now we'll use the bootstrap. By default it'll perform block bootstrapping over the highest
+entropy random effect - but there's only one, so of course the winner is `subj`.
+
+```{r, cache=TRUE}
+bootstrap_over_subj <- BootGlmm(base_model = base_run,
+                                resamples = 999, 
+                                num_cores = 4)
+```
+For publications etc, better to run about ten thousand resamples than one thousand, to avoid
+noise having much of an effect.
+
+And comparing results:
+```{r, cache=TRUE}
+print(bootstrap_over_subj)
+```
+
+This of course might take a long time. If it takes far too long on your machine,
+you can ideally run it on a bunch of computers. We don't want each computer to 
+output the fully processed output, only the intermediate outcome. To do this, 
+we set `return_coefs_instead = TRUE` for each run:
+```{r, cache=TRUE}
+b_list1 <- BootGlmm(base_model = base_run,
+                    resamples = 99, 
+                    num_cores = 1,
+                    return_coefs_instead = TRUE)
+b_list2 <- BootGlmm(base_model = base_run,
+                    resamples = 100, 
+                    num_cores = 1,
+                    return_coefs_instead = TRUE)
+b_list3 <- BootGlmm(base_model = base_run,
+                    resamples = 100, 
+                    num_cores = 1,
+                    return_coefs_instead = TRUE)
+```
+Combining this is simple enough. If we've used a few, we don't want to mess around with 
+even more lists, so we can enter them into the relevant function:
+```{r, cache=TRUE}
+CombineResampledLists(b_list1, b_list2, b_list3)
+```
+
+If we've run a huge number of such runs, ideally we'll combine all output to a list of lists, like
+so:
+```{r, cache=TRUE}
+list_of_lists_output <- list(b_list1, b_list2, b_list3)
+```
+And we'll get the same result:
+```{r, cache=TRUE}
+CombineResampledLists(list_of_lists_output)
+```
+<!---
 Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
 
 - Never uses retina figures
@@ -63,3 +154,4 @@ Also a quote using `>`:
 
 > "He who gives up [code] safety for [code] speed deserves neither."
 ([via](https://twitter.com/hadleywickham/status/504368538874703872))
+--->

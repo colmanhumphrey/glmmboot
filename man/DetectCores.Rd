@@ -11,3 +11,4 @@ DetectCores()
 Calculate number of cores using parallel,
 or not if parallel not loaded
 }
+\keyword{internal}

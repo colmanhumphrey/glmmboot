@@ -15,3 +15,4 @@ etc}
 \description{
 returns the terms with bars
 }
+\keyword{internal}

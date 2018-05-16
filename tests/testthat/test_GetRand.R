@@ -17,4 +17,4 @@ test_that('GetRand gives correct output', {
     ## i.e. empty vector
     expect_equal(GetRand('y ~ x'),
                  vector(mode = 'character'))
-}
+})

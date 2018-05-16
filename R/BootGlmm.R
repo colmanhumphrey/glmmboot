@@ -3,7 +3,10 @@
 #'
 #' By default, this will compute bootstrap resamples and then send them to BootCI
 #' for calcuation. Note - only use parallel methods if your
-#' model is expensive to build, otherwise the overhead won't be worth it. 
+#' model is expensive to build, otherwise the overhead won't be worth it.
+#'
+#' @import methods
+#' @import stats
 #'
 #' @param base_model
 #'   The pre-bootstrap model, i.e. the model output
@@ -105,8 +108,7 @@ BootGlmm <- function(base_model,
                      unique_resample_lim = NULL,
                      num_cores = DetectCores() - 1,
                      suppress_loading_bar = FALSE,
-                     allow_conv_error = FALSE,
-                     ...){    
+                     allow_conv_error = FALSE){    
     ## formula processing
     boot_form <- formula(base_model)
     rand_cols <- GetRand(boot_form)
@@ -259,9 +261,10 @@ BootGlmm <- function(base_model,
 
 #' Calculate number of cores using parallel,
 #' or not if parallel not loaded
+#' @keywords internal
 DetectCores <- function(){
     if('parallel' %in% (.packages())){
-        return(detectCores())
+        return(parallel::detectCores())
     } else {
         ## 2 so that DetectCores() - 1 gives 1
         ## not that it hugely matters
@@ -271,6 +274,7 @@ DetectCores <- function(){
 }       
 
 #' Calcuate Shannon Entropy
+#' @keywords internal
 CalcEntropy <- function(level_vector){
     freq_as_prob <- table(level_vector) / length(level_vector)
 

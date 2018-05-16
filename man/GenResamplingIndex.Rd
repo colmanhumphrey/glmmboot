@@ -11,3 +11,4 @@ GenResamplingIndex(orig_list, sampled_list)
 this function takes in original vectors, and resampled editions,
 it spits back the matching index of the original variables for the new resampled ones
 }
+\keyword{internal}

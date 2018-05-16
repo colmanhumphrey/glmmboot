@@ -8,7 +8,7 @@ stores estimates + SEs.}
 BootGlmm(base_model, resamples = 9999, return_coefs_instead = FALSE,
   resample_specific_blocks = NULL, base_data = NULL,
   unique_resample_lim = NULL, num_cores = DetectCores() - 1,
-  suppress_loading_bar = FALSE, allow_conv_error = FALSE, ...)
+  suppress_loading_bar = FALSE, allow_conv_error = FALSE)
 }
 \arguments{
 \item{base_model}{The pre-bootstrap model, i.e. the model output

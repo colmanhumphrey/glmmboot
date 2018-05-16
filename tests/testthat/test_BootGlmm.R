@@ -25,7 +25,7 @@ test_that('BootGlmm fails when model has no data and none is supplied.', {
     expect_error(
         BootGlmm(base_model = simple_model_nodata, resamples = 20)
     )
-}
+})
 
 
     

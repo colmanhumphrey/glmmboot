@@ -9,3 +9,4 @@ CalcEntropy(level_vector)
 \description{
 Calcuate Shannon Entropy
 }
+\keyword{internal}

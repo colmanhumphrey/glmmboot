@@ -7,12 +7,12 @@
     "folds" : "",
     "hash" : "0",
     "id" : "83681537",
-    "lastKnownWriteTime" : 1526497522,
-    "last_content_update" : 1526497522,
+    "lastKnownWriteTime" : 1526509601,
+    "last_content_update" : 1526509601369,
     "path" : "~/Documents/Stats/R_packages/glmmboot/DESCRIPTION",
     "project_path" : "DESCRIPTION",
     "properties" : {
-        "cursorPosition" : "17,25",
+        "cursorPosition" : "2,56",
         "scrollLine" : "0"
     },
     "relative_order" : 2,

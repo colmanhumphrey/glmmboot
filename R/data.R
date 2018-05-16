@@ -11,7 +11,9 @@
 #'
 #' @format A data frame with 300 rows and 4 variables:
 #' \describe{
-#'   \item{x_var}{independent normally distributed variables}
+#'   \item{x_var1}{independent normally distributed variable}
+#'   \item{x_var2}{independent normally distributed variable}
+#'   \item{x_var3}{independent normally distributed variable}
 #'   \item{subj}{levels of random effect}
 #'   \item{y}{outcome: lives in interval [0,1]}
 #' }

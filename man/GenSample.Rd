@@ -10,3 +10,4 @@ GenSample(list_of_levels, rand_columns = NULL, unique_resample_lim = NULL)
 Takes in a list of unique levels in the random columns,
 gives back a random sampling of each.
 }
+\keyword{internal}

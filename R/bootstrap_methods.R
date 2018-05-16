@@ -2,6 +2,8 @@
 #'
 #' Takes in a list of unique levels in the random columns,
 #' gives back a random sampling of each.
+#'
+#' @keywords internal
 GenSample <- function(list_of_levels,
                        rand_columns = NULL,
                        unique_resample_lim = NULL){
@@ -36,6 +38,8 @@ GenSample <- function(list_of_levels,
 
 #' this function takes in original vectors, and resampled editions,
 #' it spits back the matching index of the original variables for the new resampled ones
+#'
+#' @keywords internal
 GenResamplingIndex <- function(orig_list,
                                sampled_list){
     if(length(orig_list) != length(sampled_list)){
@@ -103,6 +107,8 @@ GetRand <- function(form_with_bars){
 #' returns the terms with bars
 #'
 #' @inheritParams GetRand
+#'
+#' @keywords internal
 FindBars <- function(form_with_bars){
     ## if it's just text right now, convert it
     if(!('formula' %in% class(form_with_bars))){

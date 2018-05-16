@@ -78,7 +78,7 @@ Returns the output from BootCI:
 }
 \description{
 By default, this will compute bootstrap resamples and then send them to BootCI
-for calcuation. Note - only use parallel methods if your
+for calculation. Note - only use parallel methods if your
 model is expensive to build, otherwise the overhead won't be worth it.
 }
 \examples{

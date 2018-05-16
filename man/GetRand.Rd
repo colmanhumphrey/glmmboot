@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrap_methods.R
 \name{GetRand}
 \alias{GetRand}
-\title{this takes in a formual with bars
+\title{this takes in a formula with bars
 and gives back the plain names of the columns}
 \usage{
 GetRand(form_with_bars)
@@ -18,7 +18,7 @@ A vector of the variables that
 are treated as random
 }
 \description{
-this takes in a formual with bars
+this takes in a formula with bars
 and gives back the plain names of the columns
 }
 \examples{

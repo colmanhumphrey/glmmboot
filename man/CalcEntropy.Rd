@@ -2,11 +2,11 @@
 % Please edit documentation in R/BootGlmm.R
 \name{CalcEntropy}
 \alias{CalcEntropy}
-\title{Calcuate Shannon Entropy}
+\title{Calculate Shannon Entropy}
 \usage{
 CalcEntropy(level_vector)
 }
 \description{
-Calcuate Shannon Entropy
+Calculate Shannon Entropy
 }
 \keyword{internal}

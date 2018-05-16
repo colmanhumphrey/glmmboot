@@ -7,13 +7,13 @@
     "folds" : "",
     "hash" : "0",
     "id" : "D3C4D99A",
-    "lastKnownWriteTime" : 1526510471,
-    "last_content_update" : 1526510471106,
+    "lastKnownWriteTime" : 1526513216,
+    "last_content_update" : 1526513216217,
     "path" : "~/Documents/Stats/R_packages/glmmboot/vignettes/quick_use.Rmd",
     "project_path" : "vignettes/quick_use.Rmd",
     "properties" : {
-        "cursorPosition" : "89,34",
-        "scrollLine" : "73"
+        "cursorPosition" : "6,40",
+        "scrollLine" : "0"
     },
     "relative_order" : 5,
     "source_on_save" : false,

@@ -32,7 +32,9 @@ Then enter them all here. Either just list them out,
 or put them into one list and enter them.
 }
 \examples{
-  attach(test_data)
+\dontrun{
+  data(test_data)
+  library(glmmTMB)
   test_model <- glmmTMB(y ~ x + (1 | some_RE), data = test_data, family = binomial)
   output_list1 <- BootGlmm(test_model, 99, return_coefs_instead = TRUE)
   output_list2 <- BootGlmm(test_model, 100, return_coefs_instead = TRUE)
@@ -57,5 +59,6 @@ or put them into one list and enter them.
   boot_ci1 <- CombineResampledLists(reg_list)
   full_list <- CombineResampledLists(reg_list, return_combined_list = TRUE)
   boot_ci2 <- BootCI(full_list$base_coef_se, full_list$resampled_coef_se)
-  identical(boot_ci1, boot_ci2)  
+  identical(boot_ci1, boot_ci2)
+}
 }

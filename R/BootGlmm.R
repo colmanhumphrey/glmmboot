@@ -29,7 +29,7 @@
 #' @param return_coefs_instead
 #'   Logical, default FALSE: do you want the list of lists
 #'   of results for each bootstrap sample (set to TRUE), or the
-#'   matrix output of all samples? See return for more details. 
+#'   matrix output of all samples? See return for more details.
 #'
 #' @param resample_specific_blocks
 #'   Character vector, default NULL. If left NULL,
@@ -59,6 +59,14 @@
 #' @param num_cores
 #'   Defaults to detectCores() - 1 if parallel is loaded,
 #'   or just 1 if not. How many cores to use if doing parallel work?
+#'
+#' @param suppress_sampling_message
+#'   Logical, default FALSE. By default, this function
+#'   will message the console with the type of bootstrapping:
+#'   block resampling over random effects - in which case it'll say
+#'   what effect it's sampling over;
+#'   case resampling - in which case it'll say as much.
+#'   Set TRUE to hide message.
 #'
 #' @param suppress_loading_bar
 #'   Logical, default FALSE. If TRUE, uses standard
@@ -90,14 +98,14 @@
 #'
 #' out_matrix <- BootGlmm(first_model, 20)
 #' out_list <- BootGlmm(first_model, 20, return_coefs_instead = TRUE)
-#' 
+#'
 #' \dontrun{
 #'   data(test_data)
 #'   library(glmmTMB)
 #'   test_formula <- as.formula('y ~ x_var1 + x_var2 + x_var3 + (1|subj)')
 #'   test_model <- glmmTMB(test_formula, data = test_data, family = binomial)
 #'   output_matrix <- BootGlmm(test_model, 399)
-#'  
+#'
 #'   output_lists <- BootGlmm(test_model, 399, return_coefs_instead = TRUE)
 #' }
 BootGlmm <- function(base_model,
@@ -107,8 +115,9 @@ BootGlmm <- function(base_model,
                      base_data = NULL,
                      unique_resample_lim = NULL,
                      num_cores = DetectCores() - 1,
+                     suppress_sampling_message = FALSE,
                      suppress_loading_bar = FALSE,
-                     allow_conv_error = FALSE){    
+                     allow_conv_error = FALSE){
     ## formula processing
     boot_form <- formula(base_model)
     rand_cols <- GetRand(boot_form)
@@ -152,6 +161,7 @@ BootGlmm <- function(base_model,
     ## if rand_cols is not empty, we'll resample the blocks
     ## if it's empty, we'll do standard case resampling
     if(length(rand_cols) > 0){
+        message('Performing block resampling, over ', paste(rand_cols, collapse = ', '))
         orig_list <- lapply(rand_cols, function(x){base_data[,x]})
         all_list <- lapply(orig_list, unique)
         names(orig_list) = rand_cols
@@ -161,7 +171,7 @@ BootGlmm <- function(base_model,
             samp_list = GenSample(all_list,
                                    rand_cols,
                                    unique_resample_lim)
-            
+
             samp_data = base_data[GenResamplingIndex(orig_list, samp_list),]
 
             model_output <- suppressWarnings(update(base_model, data = samp_data))
@@ -180,6 +190,7 @@ BootGlmm <- function(base_model,
             return(ret_output)
         }
     } else {
+        message('Performing case resampling (no random effects)')
         BTCoefEst <- function(){
             samp_data = base_data[sample(nrow(base_data), replace = TRUE),]
 
@@ -195,12 +206,12 @@ BootGlmm <- function(base_model,
             return(ret_output)
         }
     }
-    
+
     ## message('Computing regressions')
     if(requireNamespace('parallel', quietly = TRUE) && num_cores > 1){
         if(suppress_loading_bar || !requireNamespace('pbapply', quietly = TRUE)){
             coef_se_list <- parallel::mclapply(1:resamples, function(i){
-                BTCoefEst()}, mc.cores = num_cores, mc.preschedule = FALSE)                
+                BTCoefEst()}, mc.cores = num_cores, mc.preschedule = FALSE)
         } else {
             coef_se_list <- pbapply::pblapply(1:resamples, function(i){
                 BTCoefEst()}, cl = num_cores, mc.preschedule = FALSE)
@@ -254,7 +265,7 @@ BootGlmm <- function(base_model,
         res_mat <- BootCI(base_coef_se = main_coef_se,
                           resampled_coef_se = coef_se_list,
                           orig_df = orig_df)
-        
+
         return(res_mat)
     }
 }
@@ -271,7 +282,7 @@ DetectCores <- function(){
         message('parallel not loaded, will continue with single core (load parallel or set num_cores manually for parallel work)')
         return(2)
     }
-}       
+}
 
 #' Calculate Shannon Entropy
 #' @keywords internal

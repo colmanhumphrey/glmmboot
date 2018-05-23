@@ -32,7 +32,7 @@ Then enter them all here. Either just list them out,
 or put them into one list and enter them.
 }
 \examples{
-\dontrun{
+\donttest{
   data(test_data)
   library(glmmTMB)
   test_model <- glmmTMB(y ~ x + (1 | some_RE), data = test_data, family = binomial)
@@ -42,7 +42,7 @@ or put them into one list and enter them.
   CombineResampledLists(output_list1, output_list2, output_list3)
 
   num_blocks = 10
-  num_total_resamples = 999
+  num_total_resamples = 299
   reg_list <- list()
   for(i in 1:num_blocks){
       if(i < num_blocks){

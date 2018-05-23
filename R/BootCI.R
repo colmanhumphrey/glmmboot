@@ -20,7 +20,7 @@
 #'
 #' @param orig_df
 #'   Degrees of freedom to use to calculate the
-#'   t-values used for the base interval. 
+#'   t-values used for the base interval.
 #'
 #' @param alp_level
 #'   level of CI - if you fill in \code{probs}, will use those instead
@@ -46,12 +46,12 @@
 #' out_list <- BootGlmm(first_model, 20, return_coefs_instead = TRUE)
 #' BootCI(out_list$base_coef_se,
 #'        out_list$resampled_coef_se)
-#' 
-#' \dontrun{
+#'
+#' \donttest{
 #'   data(test_data)
 #'   library(glmmTMB)
 #'   test_model <- glmmTMB(y ~ x + (1 | some_RE), data = test_data, family = binomial)
-#'   output_lists <- BootGlmm(test_model, 399, return_coefs_instead = TRUE)
+#'   output_lists <- BootGlmm(test_model, 199, return_coefs_instead = TRUE)
 #'   BootCI(output_lists$base_coef_se,
 #'          output_lists$resampled_coef_se)
 #' }
@@ -83,7 +83,7 @@ BootCI <- function(base_coef_se = NULL,
     conf_ind <- matrix(NA, nrow = length(base_row_names),
                        ncol = length(probs) + 1)
     rownames(conf_ind) = base_row_names
-        
+
     ## actual work here...:
     for(var in base_row_names){
         base_est = base_coef_se[var,1]
@@ -98,7 +98,7 @@ BootCI <- function(base_coef_se = NULL,
         ## shouldn't happen too often...
         t_boot[1] = ifelse(t_boot[1] < 0, 0, t_boot[1])
         t_boot[2] = ifelse(t_boot[2] > 0, 0, t_boot[2])
-        
+
         result <- base_est - t_boot * base_se
 
         ## p val...
@@ -106,9 +106,9 @@ BootCI <- function(base_coef_se = NULL,
         ## p_val = mean(abs((rep_ests - base_est) / rep_ses) >=  abs(p_t))
         p_val_num = sum(abs((rep_ests - base_est) / rep_ses) >=  abs(p_t)) + 1
         p_val = p_val_num / (length(rep_ests) + 1)
-        
+
         conf_ind[var,] = c(result, p_val)
-    }    
+    }
     colnames(conf_ind) = c(paste0('boot ',names(quantile(1, probs))), ' boot p_value')
 
     use_df = ifelse(is.null(orig_df), Inf, orig_df)
@@ -124,7 +124,7 @@ BootCI <- function(base_coef_se = NULL,
                         ## p_star,
                         round(base_mat[,c(3,1,2)], 4),
                         'boot/base width' = (conf_ind[,2] - conf_ind[,1]) / (base_mat[,2] - base_mat[,1]))
-    
+
     return(ret_matrix)
 }
 
@@ -157,7 +157,7 @@ BootCI <- function(base_coef_se = NULL,
 #'   all resamples) if return_combined_list = TRUE
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   data(test_data)
 #'   library(glmmTMB)
 #'   test_model <- glmmTMB(y ~ x + (1 | some_RE), data = test_data, family = binomial)
@@ -167,7 +167,7 @@ BootCI <- function(base_coef_se = NULL,
 #'   CombineResampledLists(output_list1, output_list2, output_list3)
 #'
 #'   num_blocks = 10
-#'   num_total_resamples = 999
+#'   num_total_resamples = 299
 #'   reg_list <- list()
 #'   for(i in 1:num_blocks){
 #'       if(i < num_blocks){

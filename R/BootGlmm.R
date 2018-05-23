@@ -99,14 +99,14 @@
 #' out_matrix <- BootGlmm(first_model, 20)
 #' out_list <- BootGlmm(first_model, 20, return_coefs_instead = TRUE)
 #'
-#' \dontrun{
+#' \donttest{
 #'   data(test_data)
 #'   library(glmmTMB)
 #'   test_formula <- as.formula('y ~ x_var1 + x_var2 + x_var3 + (1|subj)')
 #'   test_model <- glmmTMB(test_formula, data = test_data, family = binomial)
-#'   output_matrix <- BootGlmm(test_model, 399)
+#'   output_matrix <- BootGlmm(test_model, 199)
 #'
-#'   output_lists <- BootGlmm(test_model, 399, return_coefs_instead = TRUE)
+#'   output_lists <- BootGlmm(test_model, 199, return_coefs_instead = TRUE)
 #' }
 BootGlmm <- function(base_model,
                      resamples = 9999,

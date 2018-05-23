@@ -55,11 +55,11 @@ out_list <- BootGlmm(first_model, 20, return_coefs_instead = TRUE)
 BootCI(out_list$base_coef_se,
        out_list$resampled_coef_se)
 
-\dontrun{
+\donttest{
   data(test_data)
   library(glmmTMB)
   test_model <- glmmTMB(y ~ x + (1 | some_RE), data = test_data, family = binomial)
-  output_lists <- BootGlmm(test_model, 399, return_coefs_instead = TRUE)
+  output_lists <- BootGlmm(test_model, 199, return_coefs_instead = TRUE)
   BootCI(output_lists$base_coef_se,
          output_lists$resampled_coef_se)
 }

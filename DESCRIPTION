@@ -9,6 +9,7 @@ Description: Performs bootstrap resampling for most models that update() works f
     are present, and case resampling if not; BootCI() converts output from
     bootstrap model runs into confidence intervals and p-values. By default,
     BootGlmm() calls BootCI(). 
+    Package motivated by Humphrey and Swingley (2018) <arXiv:1805.08670>.
 License: AGPL-3 | file LICENSE
 URL: https://github.com/ColmanHumphrey/glmmboot
 Encoding: UTF-8

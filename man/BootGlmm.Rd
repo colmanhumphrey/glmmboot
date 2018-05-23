@@ -8,7 +8,8 @@ stores estimates + SEs.}
 BootGlmm(base_model, resamples = 9999, return_coefs_instead = FALSE,
   resample_specific_blocks = NULL, base_data = NULL,
   unique_resample_lim = NULL, num_cores = DetectCores() - 1,
-  suppress_loading_bar = FALSE, allow_conv_error = FALSE)
+  suppress_sampling_message = FALSE, suppress_loading_bar = FALSE,
+  allow_conv_error = FALSE)
 }
 \arguments{
 \item{base_model}{The pre-bootstrap model, i.e. the model output
@@ -56,6 +57,13 @@ Must be named same as rand cols}
 \item{num_cores}{Defaults to detectCores() - 1 if parallel is loaded,
 or just 1 if not. How many cores to use if doing parallel work?}
 
+\item{suppress_sampling_message}{Logical, default FALSE. By default, this function
+will message the console with the type of bootstrapping:
+block resampling over random effects - in which case it'll say
+what effect it's sampling over;
+case resampling - in which case it'll say as much.
+Set TRUE to hide message.}
+
 \item{suppress_loading_bar}{Logical, default FALSE. If TRUE, uses standard
 mclapply for parallel work, else uses pblapply (from pbapply),
 which provides a nice loading bar for progress.}
@@ -95,7 +103,7 @@ out_list <- BootGlmm(first_model, 20, return_coefs_instead = TRUE)
   test_formula <- as.formula('y ~ x_var1 + x_var2 + x_var3 + (1|subj)')
   test_model <- glmmTMB(test_formula, data = test_data, family = binomial)
   output_matrix <- BootGlmm(test_model, 399)
- 
+
   output_lists <- BootGlmm(test_model, 399, return_coefs_instead = TRUE)
 }
 }

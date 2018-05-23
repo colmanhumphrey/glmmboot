@@ -1,8 +1,9 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 * Added '()' to all functions in the description.
-* Added a reference to our paper on arxiv
-* As per email to Swetlana, did not change \dontrun{} to \donttest{}: the examples in \dontrun{} take longer than 5 seconds to run, more like a few minutes.
+* Added a reference to our paper on arXiv
+* As per email from Swetlana, did not change \dontrun{} to \donttest{}, as the examples in \dontrun{} take longer than 5 seconds to run, more like a few minutes (and require a package that our code in general
+doesn't need).
 * Added message output in BootGlmm() (not requested by CRAN / Swetlana)
 
 

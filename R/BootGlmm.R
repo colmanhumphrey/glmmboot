@@ -26,6 +26,12 @@
 #'   but start very small to make sure it works on
 #'   your data properly, and to get a rough timing estimate etc.
 #'
+#' @param base_data
+#'   Default NULL; In a future version this will become mandatory to supply.
+#'   In some cases, it canx be extracted
+#'   from the base_model, but this can produce bugs. It's recommended that
+#'   you supply your data.
+#'
 #' @param return_coefs_instead
 #'   Logical, default FALSE: do you want the list of lists
 #'   of results for each bootstrap sample (set to TRUE), or the
@@ -44,11 +50,6 @@
 #'   random effects, set resample_specific_blocks to any
 #'   non-null value that does not contain any random effect
 #'   variable names.
-#'
-#' @param base_data
-#'   Default NULL; only needed if it can't be extracted
-#'   from the base_model, either because it's been stripped from the
-#'   model, or the calls ($model, $frame, @frame) don't work.
 #'
 #' @param unique_resample_lim
 #'   Should be same length as number of random effects (or left NULL).
@@ -110,9 +111,9 @@
 #' }
 BootGlmm <- function(base_model,
                      resamples = 9999,
+                     base_data = NULL,
                      return_coefs_instead = FALSE,
                      resample_specific_blocks = NULL,
-                     base_data = NULL,
                      unique_resample_lim = NULL,
                      num_cores = DetectCores() - 1,
                      suppress_sampling_message = FALSE,
@@ -145,6 +146,7 @@ BootGlmm <- function(base_model,
         } else {
             stop('Other dataframe extraction methods not implemented, please file an issue, or supply data as base_data to this function')
         }
+        warning('Please supply data through the argument base_data; automatic reading from your model can produce unforeseeable bugs. In a future version, explicit data passing will become mandatory.')
     }
 
     ## deciding on random blocks. Subset of rand_cols:

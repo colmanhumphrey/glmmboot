@@ -101,10 +101,14 @@ BootCI <- function(base_coef_se = NULL,
 
         result <- base_est - t_boot * base_se
 
-        ## p val...
+        ## p val:
         p_t = base_est / base_se
-        ## p_val = mean(abs((rep_ests - base_est) / rep_ses) >=  abs(p_t))
-        p_val_num = sum(abs((rep_ests - base_est) / rep_ses) >=  abs(p_t)) + 1
+        
+        p_val_num_left = sum((rep_ests - base_est) / rep_ses <=  p_t) + 1
+        p_val_num_right = sum((rep_ests - base_est) / rep_ses >=  p_t) + 1
+
+        p_val_num = 2 * min(p_val_num_left, p_val_num_right)
+            
         p_val = p_val_num / (length(rep_ests) + 1)
 
         conf_ind[var,] = c(result, p_val)

@@ -28,7 +28,7 @@
 #'
 #' @param base_data
 #'   Default NULL; In a future version this will become mandatory to supply.
-#'   In some cases, it canx be extracted
+#'   In some cases, it can be extracted
 #'   from the base_model, but this can produce bugs. It's recommended that
 #'   you supply your data.
 #'

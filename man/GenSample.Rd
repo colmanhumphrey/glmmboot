@@ -4,7 +4,8 @@
 \alias{GenSample}
 \title{Generates block resamples}
 \usage{
-GenSample(list_of_levels, rand_columns = NULL, unique_resample_lim = NULL)
+GenSample(list_of_levels, rand_columns = NULL,
+  unique_resample_lim = NULL)
 }
 \description{
 Takes in a list of unique levels in the random columns,

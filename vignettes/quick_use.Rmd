@@ -29,9 +29,12 @@ If your model is called `base_model` for example, then
 if `coef(summary(base_model))` or `coef(summary(base_model))$cond`
 gives the estimates and standard errors, the method will work.
 
-Further, if the dataframe that creates the model is accessible from
+The data should be supplied manually, although it's currently the case 
+that if the dataframe that creates the model is accessible from
 `base_model$model`, `base_model$frame` or `base_model@frame`, you 
-won't have to send the data in to the function separately. 
+won't have to send the data in to the function separately. Be 
+careful here - some models supply this but the method introduces bugs. 
+Much safer to supply the data explicitly.
 
 Let's work through an example with `glmmTMB`. We'll use the data
 that comes with `glmmboot`.
@@ -63,6 +66,7 @@ entropy random effect - but there's only one, so of course the winner is `subj`.
 ```{r, cache=TRUE}
 bootstrap_over_subj <- BootGlmm(base_model = base_run,
                                 resamples = 99, 
+                                base_data = test_data,
                                 num_cores = 4)
 ```
 For publications etc, better to run about ten thousand resamples to avoid
@@ -80,14 +84,17 @@ we set `return_coefs_instead = TRUE` for each run:
 ```{r, cache=TRUE}
 b_list1 <- BootGlmm(base_model = base_run,
                     resamples = 29, 
+                    base_data = test_data,
                     num_cores = 1,
                     return_coefs_instead = TRUE)
 b_list2 <- BootGlmm(base_model = base_run,
                     resamples = 30, 
+                    base_data = test_data,
                     num_cores = 1,
                     return_coefs_instead = TRUE)
 b_list3 <- BootGlmm(base_model = base_run,
                     resamples = 30, 
+                    base_data = test_data,
                     num_cores = 1,
                     return_coefs_instead = TRUE)
 ```

@@ -24,16 +24,16 @@ performs case resampling.
 The only requirements are that the model works with the 
 function update, to change the data; and that the coefficients
 are extractable using coef(summary(model)) or coef(summary(model))$cond.
-The data will be automatically extracted if of typical form; if not, you can 
-supply it manually. 
+While in some cases the data will be automatically extracted, you should
+supply it manually. In a future version, supplying the data explicitly will be mandatory.
 
 ## Installation
 
-For now, you can install glmmboot from github with:
+glmmboot is on CRAN, so you can install it normally:
 
 ```{r gh-installation, eval = FALSE}
-# install.packages("devtools")
-devtools::install_github("ColmanHumphrey/glmmboot")
+install.packages("glmmboot")
+#devtools::install_github("ColmanHumphrey/glmmboot")
 ```
 
 ## Example
@@ -49,12 +49,14 @@ expit <- function(x){exp(x) / (1 + exp(x))}
 y_mean <- expit(0.2 - 0.3 * x1 + 0.4 * x2)
 
 y <- rbinom(50, 1, prob = y_mean)
+
+sample_frame = data.frame(x1 = x1, x2 = x2, y = y)
 ```
 
 Typically this model is fit with logistic regression:
 
 ```{r}
-base_run <- glm(y ~ x1 + x2, family = binomial(link = 'logit'))
+base_run <- glm(y ~ x1 + x2, family = binomial(link = 'logit'), data = sample_frame)
 
 summary(base_run)
 ```
@@ -64,7 +66,7 @@ is small - parallel overhead is too expensive here.
 
 ```{r}
 library(glmmboot)
-boot_results <- BootGlmm(base_model = base_run, resamples = 999, num_cores = 1)
+boot_results <- BootGlmm(base_model = base_run, resamples = 999, base_data = sample_frame, num_cores = 1)
 ```
 
 And the results:

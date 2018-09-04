@@ -5,8 +5,8 @@
 \title{computes bootstrap resamples of your data,
 stores estimates + SEs.}
 \usage{
-BootGlmm(base_model, resamples = 9999, return_coefs_instead = FALSE,
-  resample_specific_blocks = NULL, base_data = NULL,
+BootGlmm(base_model, resamples = 9999, base_data = NULL,
+  return_coefs_instead = FALSE, resample_specific_blocks = NULL,
   unique_resample_lim = NULL, num_cores = DetectCores() - 1,
   suppress_sampling_message = FALSE, suppress_loading_bar = FALSE,
   allow_conv_error = FALSE)
@@ -28,6 +28,11 @@ For now, if you have a different case, extract and send as base_data.}
 but start very small to make sure it works on
 your data properly, and to get a rough timing estimate etc.}
 
+\item{base_data}{Default NULL; In a future version this will become mandatory to supply.
+In some cases, it canx be extracted
+from the base_model, but this can produce bugs. It's recommended that
+you supply your data.}
+
 \item{return_coefs_instead}{Logical, default FALSE: do you want the list of lists
 of results for each bootstrap sample (set to TRUE), or the
 matrix output of all samples? See return for more details.}
@@ -44,10 +49,6 @@ matrix output of all samples? See return for more details.}
   random effects, set resample_specific_blocks to any
   non-null value that does not contain any random effect
   variable names.}
-
-\item{base_data}{Default NULL; only needed if it can't be extracted
-from the base_model, either because it's been stripped from the
-model, or the calls ($model, $frame, @frame) don't work.}
 
 \item{unique_resample_lim}{Should be same length as number of random effects (or left NULL).
 Do you want to force the resampling to produce a minimum number of

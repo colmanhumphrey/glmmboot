@@ -35,10 +35,11 @@ or put them into one list and enter them.
 \donttest{
   data(test_data)
   library(glmmTMB)
-  test_model <- glmmTMB(y ~ x + (1 | some_RE), data = test_data, family = binomial)
-  output_list1 <- BootGlmm(test_model, 99, return_coefs_instead = TRUE)
-  output_list2 <- BootGlmm(test_model, 100, return_coefs_instead = TRUE)
-  output_list3 <- BootGlmm(test_model, 100, return_coefs_instead = TRUE)
+  ## where subj is some RE
+  test_model <- glmmTMB(y ~ x_var1 + (1 | subj), data = test_data, family = binomial)
+  output_list1 <- BootGlmm(test_model, 99, base_data = test_data, return_coefs_instead = TRUE)
+  output_list2 <- BootGlmm(test_model, 100, base_data = test_data, return_coefs_instead = TRUE)
+  output_list3 <- BootGlmm(test_model, 100, base_data = test_data, return_coefs_instead = TRUE)
   CombineResampledLists(output_list1, output_list2, output_list3)
 
   num_blocks = 10
@@ -52,6 +53,7 @@ or put them into one list and enter them.
       }
       reg_list[[i]] = BootGlmm(test_model,
                                resamples = block_resamples,
+                               base_data = test_data,
                                return_coefs_instead = TRUE,
                                num_cores = 4,
                                suppress_loading_bar = TRUE)

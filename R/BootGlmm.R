@@ -57,6 +57,13 @@
 #'   unique values in sampling? Don't make this too big...
 #'   Must be named same as rand cols
 #'
+#' @param narrowness_avoid
+#' Boolean, default TRUE.
+#' If TRUE, will resample n-1 instead of n elements
+#' in the bootstrap (n being either rows, or random effect levels,
+#' depending on existence of random effects). If FALSE, will do
+#' typical size n resampling.
+#'
 #' @param num_cores
 #'   Defaults to detectCores() - 1 if parallel is loaded,
 #'   or just 1 if not. How many cores to use if doing parallel work?
@@ -116,6 +123,7 @@ BootGlmm <- function(base_model,
                      return_coefs_instead = FALSE,
                      resample_specific_blocks = NULL,
                      unique_resample_lim = NULL,
+                     narrowness_avoid = TRUE,
                      num_cores = DetectCores() - 1,
                      suppress_sampling_message = FALSE,
                      suppress_loading_bar = FALSE,
@@ -172,8 +180,9 @@ BootGlmm <- function(base_model,
 
         BTCoefEst <- function(){
             samp_list = GenSample(all_list,
-                                   rand_cols,
-                                   unique_resample_lim)
+                                  rand_cols,
+                                  unique_resample_lim,
+                                  narrowness_avoid)
 
             samp_data = base_data[GenResamplingIndex(orig_list, samp_list),]
 
@@ -195,7 +204,11 @@ BootGlmm <- function(base_model,
     } else {
         message('Performing case resampling (no random effects)')
         BTCoefEst <- function(){
-            samp_data = base_data[sample(nrow(base_data), replace = TRUE),]
+            if(narrowness_avoid){
+                samp_data = base_data[sample(nrow(base_data), nrow(base_data) - 1, replace = TRUE),]
+            } else {
+                samp_data = base_data[sample(nrow(base_data), replace = TRUE),]
+            }
 
             model_output <- suppressWarnings(update(base_model, data = samp_data))
 

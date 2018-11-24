@@ -5,8 +5,9 @@
 #'
 #' @keywords internal
 GenSample <- function(list_of_levels,
-                       rand_columns = NULL,
-                       unique_resample_lim = NULL){
+                      rand_columns = NULL,
+                      unique_resample_lim = NULL,
+                      reduce_by_one = TRUE){
     if(is.null(rand_columns)){
         rand_columns = names(list_of_levels)
     }
@@ -22,11 +23,19 @@ GenSample <- function(list_of_levels,
                       } else {
                           iters = iters + 1
                       }
-                      samp = sample(levs, replace = TRUE)
+                      if(reduce_by_one){
+                          samp = sample(levs, size = length(levs) - 1, replace = TRUE)
+                      } else {
+                          samp = sample(levs, replace = TRUE)
+                      }
                       len_uni = length(unique(samp))
                   }
         } else {
-            samp = sample(levs, replace = TRUE)
+            if(reduce_by_one){
+                samp = sample(levs, size = length(levs) - 1, replace = TRUE)
+            } else {
+                samp = sample(levs, replace = TRUE)
+            }
         }
         return(samp)
     }

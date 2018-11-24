@@ -55,7 +55,7 @@ or put them into one list and enter them.
                                resamples = block_resamples,
                                base_data = test_data,
                                return_coefs_instead = TRUE,
-                               num_cores = 4,
+                               num_cores = 1, ## increase for parallel
                                suppress_loading_bar = TRUE)
   }
   boot_ci1 <- CombineResampledLists(reg_list)

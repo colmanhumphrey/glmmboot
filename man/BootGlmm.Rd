@@ -7,9 +7,9 @@ stores estimates + SEs.}
 \usage{
 BootGlmm(base_model, resamples = 9999, base_data = NULL,
   return_coefs_instead = FALSE, resample_specific_blocks = NULL,
-  unique_resample_lim = NULL, num_cores = DetectCores() - 1,
-  suppress_sampling_message = FALSE, suppress_loading_bar = FALSE,
-  allow_conv_error = FALSE)
+  unique_resample_lim = NULL, narrowness_avoid = TRUE,
+  num_cores = DetectCores() - 1, suppress_sampling_message = FALSE,
+  suppress_loading_bar = FALSE, allow_conv_error = FALSE)
 }
 \arguments{
 \item{base_model}{The pre-bootstrap model, i.e. the model output
@@ -54,6 +54,12 @@ matrix output of all samples? See return for more details.}
 Do you want to force the resampling to produce a minimum number of
 unique values in sampling? Don't make this too big...
 Must be named same as rand cols}
+
+\item{narrowness_avoid}{Boolean, default TRUE.
+If TRUE, will resample n-1 instead of n elements
+in the bootstrap (n being either rows, or random effect levels,
+depending on existence of random effects). If FALSE, will do
+typical size n resampling.}
 
 \item{num_cores}{Defaults to detectCores() - 1 if parallel is loaded,
 or just 1 if not. How many cores to use if doing parallel work?}

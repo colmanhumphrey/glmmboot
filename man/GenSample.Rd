@@ -5,7 +5,7 @@
 \title{Generates block resamples}
 \usage{
 GenSample(list_of_levels, rand_columns = NULL,
-  unique_resample_lim = NULL)
+  unique_resample_lim = NULL, reduce_by_one = TRUE)
 }
 \description{
 Takes in a list of unique levels in the random columns,

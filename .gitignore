@@ -1,8 +1,11 @@
 docs
 inst/doc
+**/.Rproj.user
 .Rproj.user
+.Rproj.user/
 .Rbuildignore
-.Rhistory
+*.Rhistory
 .RData
 .git
 .DS_Store
+

@@ -22,7 +22,7 @@ Suggests:
     glmmTMB (>= 0.2.1),
     testthat (>= 0.11.0),
     parallel (>= 3.0.0),
-    future.apply (>= 1.11.0),
+    future.apply (>= 1.1.0),
     knitr,
     rmarkdown
 RoxygenNote: 6.1.1

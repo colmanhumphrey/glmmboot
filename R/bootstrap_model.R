@@ -144,8 +144,6 @@ bootstrap_model <- function(base_model,
                  "please supply data as base_data ",
                  "to this function", call. = FALSE)
         }
-
-        stop("base_data must be supplied", call. = FALSE)
     }
 
     parallelism <- match.arg(parallelism)

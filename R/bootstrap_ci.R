@@ -1,4 +1,4 @@
-#' Generating boostrap confidence intervals
+#' Generating bootstrap confidence intervals
 #'
 #' Enter first level estimates and second level estimates,
 #' pget bootstrap interval, from the pivotal bootstrap t
@@ -45,7 +45,7 @@
 #' y <- rnorm(20) + x
 #' xy_data = data.frame(x = x, y = y)
 #' first_model <- lm(y ~ x, data = xy_data)
-#' out_list <- boostrap_model(first_model, base_data = xy_data, 20,
+#' out_list <- bootstrap_model(first_model, base_data = xy_data, 20,
 #'                            return_coefs_instead = TRUE)
 #' bootstrap_ci(out_list$base_coef_se,
 #'              out_list$resampled_coef_se)
@@ -74,7 +74,7 @@ bootstrap_ci <- function(base_coef_se = NULL,
         })
 
     ci_results <- Map(function(base_matrix, resampled_coef_list){
-        boostrap_individual_ci(base_matrix,
+        bootstrap_individual_ci(base_matrix,
                                resampled_coef_list,
                                orig_df = orig_df,
                                alpha_level = alpha_level,
@@ -97,7 +97,7 @@ bootstrap_ci <- function(base_coef_se = NULL,
 #'   Returns a matrix result
 #'
 #' @keywords internal
-boostrap_individual_ci <- function(base_matrix = NULL,
+bootstrap_individual_ci <- function(base_matrix = NULL,
                                    resampled_coef_list = NULL,
                                    orig_df = NULL,
                                    alpha_level = 0.05,
@@ -266,6 +266,8 @@ ci_variable <- function(base_est,
 
 #' @rdname bootstrap_ci
 #' @export
+#' @param alp_level
+#' now alpha_level
 BootCI <- function(base_coef_se = NULL,
                    resampled_coef_se = NULL,
                    orig_df = NULL,
@@ -275,7 +277,7 @@ BootCI <- function(base_coef_se = NULL,
     bootstrap_ci(base_coef_se = base_coef_se,
                  resampled_coef_se = resampled_coef_se,
                  orig_df = orig_df,
-                 alp_level = alp_level,
+                 alpha_level = alp_level,
                  probs = probs)
 }
 

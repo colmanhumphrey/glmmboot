@@ -18,7 +18,7 @@ bootstrap_runner(bootstrap_function, resamples, parallelism = c("none",
 }
 \value{
 returns the list that contains the results of running
-`bootstrap_function`.
+  `bootstrap_function`.
 }
 \description{
 This function gets passed a function that runs a single bootstrap resample

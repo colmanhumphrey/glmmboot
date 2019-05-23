@@ -102,6 +102,7 @@ gen_samp_lev <- function(levels,
 #' Sampled list
 #'
 #' @return
+#' Returns an index vector
 #'
 #' @keywords internal
 gen_resampling_index <- function(orig_list,

@@ -12,7 +12,7 @@ gen_resampling_index(orig_list, sampled_list)
 \item{sampled_list}{Sampled list}
 }
 \value{
-
+Returns an index vector
 }
 \description{
 this function takes in original vectors, and resampled editions,

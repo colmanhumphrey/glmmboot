@@ -7,14 +7,15 @@
 stores estimates + SEs.}
 \usage{
 bootstrap_model(base_model, base_data, resamples = 9999,
-  return_coefs_instead = FALSE, resample_specific_blocks = NULL,
+  return_coefs_instead = FALSE, parallelism = c("none", "future",
+  "parallel"), resample_specific_blocks = NULL,
   unique_resample_lim = NULL, narrowness_avoid = TRUE,
   num_cores = NULL, suppress_sampling_message = FALSE)
 
 BootGlmm(base_model, resamples = 9999, base_data = NULL,
   return_coefs_instead = FALSE, resample_specific_blocks = NULL,
   unique_resample_lim = NULL, narrowness_avoid = TRUE,
-  num_cores = detect_cores() - 1, suppress_sampling_message = FALSE,
+  num_cores = NULL, suppress_sampling_message = FALSE,
   suppress_loading_bar = FALSE, allow_conv_error = FALSE)
 }
 \arguments{
@@ -37,6 +38,12 @@ your data properly, and to get a rough timing estimate etc.}
 \item{return_coefs_instead}{Logical, default FALSE: do you want the list of lists
 of results for each bootstrap sample (set to TRUE), or the
 matrix output of all samples? See return for more details.}
+
+\item{parallelism}{What type of parallelism (if any) to use to run the resamples.
+Options are:
+- "none"      the default
+- "future"    to use future.apply (`future`s)
+- "parallel"  to use parallel::mclapply}
 
 \item{resample_specific_blocks}{Character vector, default NULL. If left NULL,
   this algorithm with choose ONE random block to resample over -
@@ -62,8 +69,7 @@ in the bootstrap (n being either rows, or random effect levels,
 depending on existence of random effects). If FALSE, will do
 typical size n resampling.}
 
-\item{num_cores}{Defaults to detect_cores() - 1 if parallel is loaded,
-or just 1 if not. How many cores to use if doing parallel work?}
+\item{num_cores}{Defaults to parallel::detectCores() - 1 if parallelism = "parallel"}
 
 \item{suppress_sampling_message}{Logical, default FALSE. By default, this function
 will message the console with the type of bootstrapping:
@@ -71,23 +77,28 @@ block resampling over random effects - in which case it'll say
 what effect it's sampling over;
 case resampling - in which case it'll say as much.
 Set TRUE to hide message.}
+
+\item{suppress_loading_bar}{defunct now}
+
+\item{allow_conv_error}{defunct now}
 }
 \value{
-Returns the output from BootCI:
-  a matrix of output for each fixed variable, including
-  the intercept (estimate, CIs for boot and base, p-values).
+By default, returns the output from bootstrap_ci:
+    - for each set of covariates (usually just the one set,
+      the conditional model), a mtarix of output, a row for each variable,
+      including the intercept
+      (estimate, CIs for boot and base, p-values).
   If return_coefs_instead = TRUE, then will instead
   return a list of length two:
-  [[1]] will be a matrix containing the base
-  estimates and standard errors.
+  [[1]] will be a list containing the output for the base model
   [[2]] will be a list of length resamples,
-  each a matrix of estimates and standard errors.
+  each a list of matrices of estimates and standard errors for each model.
   This output is useful for error checking, and if you want
-  to run this function in a distributed way.
+  to run this function in certain distributed ways.
 }
 \description{
 By default, this will compute bootstrap resamples
-and then send them to `boot_ci`
+and then send them to `bootstrap_ci`
 for calculation. Note - only use parallel methods if your
 model is expensive to build, otherwise the overhead won't be worth it.
 }
@@ -97,19 +108,23 @@ y <- rnorm(20) + x
 xy_data = data.frame(x = x, y = y)
 first_model <- lm(y ~ x, data = xy_data)
 
-out_matrix <- bootstrap_model(first_model, 20, base_data = xy_data)
-out_list <- bootstrap_model(first_model, 20,
-                            base_data = xy_data, return_coefs_instead = TRUE)
+out_matrix <- bootstrap_model(first_model, base_data = xy_data, 20)
+out_list <- bootstrap_model(first_model,
+                            base_data = xy_data,
+                            resamples = 20,
+                            return_coefs_instead = TRUE)
 
 \donttest{
   data(test_data)
   library(glmmTMB)
   test_formula <- as.formula('y ~ x_var1 + x_var2 + x_var3 + (1|subj)')
   test_model <- glmmTMB(test_formula, data = test_data, family = binomial)
-  output_matrix <- bootstrap_model(test_model, 199, base_data = test_data)
+  output_matrix <- bootstrap_model(test_model, base_data = test_data, 199)
 
-  output_lists <- bootstrap_model(test_model, 199,
+  output_lists <- bootstrap_model(test_model,
                                   base_data = test_data,
+                                  resamples = 199,
                                   return_coefs_instead = TRUE)
 }
+
 }

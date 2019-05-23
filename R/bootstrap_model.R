@@ -33,6 +33,13 @@
 #'   of results for each bootstrap sample (set to TRUE), or the
 #'   matrix output of all samples? See return for more details.
 #'
+#' @param parallelism
+#'   What type of parallelism (if any) to use to run the resamples.
+#'   Options are:
+#'   - "none"      the default
+#'   - "future"    to use future.apply (`future`s)
+#'   - "parallel"  to use parallel::mclapply
+#'
 #' @param resample_specific_blocks
 #'   Character vector, default NULL. If left NULL,
 #'   this algorithm with choose ONE random block to resample over -
@@ -61,8 +68,7 @@
 #'   typical size n resampling.
 #'
 #' @param num_cores
-#'   Defaults to detect_cores() - 1 if parallel is loaded,
-#'   or just 1 if not. How many cores to use if doing parallel work?
+#'   Defaults to parallel::detectCores() - 1 if parallelism = "parallel"
 #'
 #' @param suppress_sampling_message
 #'   Logical, default FALSE. By default, this function
@@ -320,6 +326,10 @@ bootstrap_model <- function(base_model,
 
 #' @export
 #' @rdname bootstrap_model
+#' @param suppress_loading_bar
+#' defunct now
+#' @param allow_conv_error
+#' defunct now
 BootGlmm <- function(base_model,
                      resamples = 9999,
                      base_data = NULL,
@@ -327,11 +337,11 @@ BootGlmm <- function(base_model,
                      resample_specific_blocks = NULL,
                      unique_resample_lim = NULL,
                      narrowness_avoid = TRUE,
-                     num_cores = detect_cores() - 1,
+                     num_cores = NULL,
                      suppress_sampling_message = FALSE,
                      suppress_loading_bar = FALSE,
                      allow_conv_error = FALSE){
-    .Deprecated("boostrap_model")
+    .Deprecated("bootstrap_model")
 
     bootstrap_model(base_model = base_model,
                     base_data = base_data,

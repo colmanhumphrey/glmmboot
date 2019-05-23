@@ -2,10 +2,14 @@
 % Please edit documentation in R/bootstrap_ci.R
 \name{bootstrap_ci}
 \alias{bootstrap_ci}
-\title{Generating boostrap confidence intervals}
+\alias{BootCI}
+\title{Generating bootstrap confidence intervals}
 \usage{
 bootstrap_ci(base_coef_se = NULL, resampled_coef_se = NULL,
-  orig_df = NULL, alp_level = 0.05, probs = NULL)
+  orig_df = NULL, alpha_level = 0.05, probs = NULL)
+
+BootCI(base_coef_se = NULL, resampled_coef_se = NULL, orig_df = NULL,
+  alp_level = 0.05, probs = NULL)
 }
 \arguments{
 \item{base_coef_se}{Estimates and SEs from full sample. In matrix form:
@@ -24,19 +28,21 @@ each list entry has the same format as the base_coef_se above.}
 \item{orig_df}{Degrees of freedom to use to calculate the
 t-values used for the base interval.}
 
-\item{alp_level}{level of CI - if you fill in \code{probs}, will use those instead}
+\item{alpha_level}{level of CI - if you fill in \code{probs}, will use those instead}
 
-\item{probs}{Default NULL, and will use alp_level to set
+\item{probs}{Default NULL, and will use alpha_level to set
 endpoints. Else will calculate these CI endpoints.}
+
+\item{alp_level}{now alpha_level}
 }
 \value{
 A matrix containing:
-  Estimates;
-  Bootstrap interval endpoints;
-  Bootstrap p-value;
-  Base p-value;
-  Base interval endpoints;
-  Relative width of bootstrap interval to base
+    Estimates;
+    Bootstrap interval endpoints;
+    Bootstrap p-value;
+    Base p-value;
+    Base interval endpoints;
+    Relative width of bootstrap interval to base
 }
 \description{
 Enter first level estimates and second level estimates,
@@ -49,21 +55,21 @@ x <- rnorm(20)
 y <- rnorm(20) + x
 xy_data = data.frame(x = x, y = y)
 first_model <- lm(y ~ x, data = xy_data)
-out_list <- BootGlmm(first_model, 20, base_data = xy_data,
-                     return_coefs_instead = TRUE)
-BootCI(out_list$base_coef_se,
-       out_list$resampled_coef_se)
+out_list <- bootstrap_model(first_model, base_data = xy_data, 20,
+                           return_coefs_instead = TRUE)
+bootstrap_ci(out_list$base_coef_se,
+             out_list$resampled_coef_se)
 
 \donttest{
   data(test_data)
   library(glmmTMB)
-  ## where subj is some random effect
+  ## where subj is a random effect
   test_model <- glmmTMB(y ~ x_var1 + (1 | subj),
                         data = test_data, family = binomial)
-  output_lists <- BootGlmm(test_model, 199, base_data = test_data,
-                           return_coefs_instead = TRUE)
-  BootCI(output_lists$base_coef_se,
-         output_lists$resampled_coef_se)
+  output_lists <- bootstrap_model(test_model, base_data = test_data, 199,
+                                  return_coefs_instead = TRUE)
+  bootstrap_ci(output_lists$base_coef_se,
+               output_lists$resampled_coef_se)
 }
 
 }

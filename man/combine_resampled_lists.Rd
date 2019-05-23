@@ -3,28 +3,30 @@
 \name{combine_resampled_lists}
 \alias{combine_resampled_lists}
 \alias{CombineResampledLists}
-\title{Combines output from multiple glmmboot calls}
+\title{Combines output from multiple bootstrap_model calls}
 \usage{
 combine_resampled_lists(..., return_combined_list = FALSE)
 
 CombineResampledLists(..., return_combined_list = FALSE)
 }
 \arguments{
-\item{...}{Say our output from BootGlmm from three separate computers is
+\item{...}{Say our output from bootstrap_model from three separate computers is
 output_list1,
 output_list2,
 output_list3
-We can run: CombineResampledLists(output_list1, output_list2, output_list3)
+We can run: combine_resampled_lists(output_list1,
+                                    output_list2,
+                                    output_list3)
 OR: create a list of lists:
 output_list_list <- list(output_list1, output_list2, output_list3)
-and then: CombineResampledLists(output_list_list)}
+and then: combine_resampled_lists(output_list_list)}
 
 \item{return_combined_list}{Logical, default FALSE. TRUE if you want the combined
-list of lists, FALSE for just the output from BootCI applied to it.}
+list of lists, FALSE for just the output from bootstrap_ci applied to it.}
 }
 \value{
-Returns the same output as BootCI by default,
-  or the combined list (as if you had just run BootGlmm once with
+Returns the same output as bootstrap_ci by default,
+  or the combined list (as if you had just run bootstrap_model once with
   all resamples) if return_combined_list = TRUE
 }
 \description{
@@ -38,11 +40,16 @@ or put them into one list and enter them.
   data(test_data)
   library(glmmTMB)
   ## where subj is some RE
-  test_model <- glmmTMB(y ~ x_var1 + (1 | subj), data = test_data, family = binomial)
-  output_list1 <- BootGlmm(test_model, 99, base_data = test_data, return_coefs_instead = TRUE)
-  output_list2 <- BootGlmm(test_model, 100, base_data = test_data, return_coefs_instead = TRUE)
-  output_list3 <- BootGlmm(test_model, 100, base_data = test_data, return_coefs_instead = TRUE)
-  CombineResampledLists(output_list1, output_list2, output_list3)
+  test_model <- glmmTMB(y ~ x_var1 + (1 | subj),
+                        data = test_data,
+                        family = binomial)
+  output_list1 <- bootstrap_model(
+      test_model, base_data = test_data, 99, return_coefs_instead = TRUE)
+  output_list2 <- bootstrap_model(
+      test_model, base_data = test_data, 100, return_coefs_instead = TRUE)
+  output_list3 <- bootstrap_model(
+      test_model, base_data = test_data, 100, return_coefs_instead = TRUE)
+  combine_resampled_lists(output_list1, output_list2, output_list3)
 
   num_blocks = 10
   num_total_resamples = 299
@@ -53,16 +60,16 @@ or put them into one list and enter them.
       } else {
           block_resamples = floor((num_total_resamples + 1)/num_blocks - 1)
       }
-      reg_list[[i]] = BootGlmm(test_model,
-                               resamples = block_resamples,
-                               base_data = test_data,
-                               return_coefs_instead = TRUE,
-                               num_cores = 1, ## increase for parallel
-                               suppress_loading_bar = TRUE)
+      reg_list[[i]] = bootstrap_model(test_model,
+                                      base_data = test_data,
+                                      resamples = block_resamples,
+                                      return_coefs_instead = TRUE,
+                                      num_cores = 1) ## increase for parallel
   }
-  boot_ci1 <- CombineResampledLists(reg_list)
-  full_list <- CombineResampledLists(reg_list, return_combined_list = TRUE)
-  boot_ci2 <- BootCI(full_list$base_coef_se, full_list$resampled_coef_se)
+  boot_ci1 <- combine_resampled_lists(reg_list)
+  full_list <- combine_resampled_lists(reg_list, return_combined_list = TRUE)
+  boot_ci2 <- bootstrap_ci(full_list$base_coef_se,
+                           full_list$resampled_coef_se)
   identical(boot_ci1, boot_ci2)
 }
 

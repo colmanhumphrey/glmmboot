@@ -85,7 +85,7 @@ Set TRUE to hide message.}
 \value{
 By default, returns the output from bootstrap_ci:
     - for each set of covariates (usually just the one set,
-      the conditional model), a mtarix of output, a row for each variable,
+      the conditional model), a matrix of output, a row for each variable,
       including the intercept
       (estimate, CIs for boot and base, p-values).
   If return_coefs_instead = TRUE, then will instead

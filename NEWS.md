@@ -15,7 +15,7 @@ API changes:
 
 # glmmboot 0.2.0
 
-* Added a warning if data not supplied explictly
+* Added a warning if data not supplied explicitly
 * Changed two-sided p-value calculation to more tightly respect the fact that the bootstrap t-values
   intentionally are not forced to be symmetric.
   

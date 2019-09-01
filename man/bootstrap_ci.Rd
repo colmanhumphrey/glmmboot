@@ -46,7 +46,7 @@ A matrix containing:
 }
 \description{
 Enter first level estimates and second level estimates,
-pget bootstrap interval, from the pivotal bootstrap t
+get bootstrap interval, from the pivotal bootstrap t
 (Efron and Tibshirani 1994, also endorsed
 by Hesterberg 2015).
 }

@@ -63,3 +63,48 @@ test_that("bootstrap_model works on zero-inflated models", {
     expect_equal(unname(unlist(lapply(zero_boot, class))),
                  c("matrix", "matrix"))
 })
+
+test_that("bootstrap_model parallelism modes", {
+    x <- rnorm(10)
+    y <- rnorm(10)
+    xy_data <- data.frame(x = x, y = y)
+    simple_model <- lm(y ~ x, data = xy_data)
+
+    expect_error(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 parallelism = "none",
+                                 num_cores = 4))
+    expect_error(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 parallelism = "none",
+                                 num_cores = 1,
+                                 suppress_sampling_message = TRUE),
+                 NA)
+    expect_error(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 parallelism = "none",
+                                 num_cores = NULL,
+                                 suppress_sampling_message = TRUE),
+                 NA)
+
+    if (!requireNamespace("future.apply", quietly = TRUE)) {
+        skip("need future.apply for this next test")
+    }
+
+    expect_error(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 parallelism = "future",
+                                 num_cores = 4,
+                                 suppress_sampling_message = TRUE))
+    expect_error(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 parallelism = "future",
+                                 num_cores = NULL,
+                                 suppress_sampling_message = TRUE),
+                 NA)
+})

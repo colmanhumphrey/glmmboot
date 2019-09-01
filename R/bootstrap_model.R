@@ -146,7 +146,45 @@ bootstrap_model <- function(base_model,
         }
     }
 
-    parallelism <- match.arg(parallelism)
+    if (missing(parallelism)) {
+        if (!is.null(num_cores) && num_cores > 1) {
+            ## if just the num_cores argument is used, we'll
+            ## assume parallel::mclapply is desired
+            if (!requireNamespace("parallel", quietly = TRUE)) {
+                stop("setting `num_cores` greater than 1 without setting ",
+                     "`parallelism` uses `package:parallel`, ",
+                     "but it's not installed", call. = FALSE)
+            }
+            parallelism <- "parallel"
+        } else {
+            parallelism <- "none"
+        }
+    } else {
+        parallelism <- match.arg(parallelism)
+        if (parallelism == "none" && !is.null(num_cores) && num_cores > 1) {
+            stop("contradiction between `parallelism = \"none\"` ",
+                 "and `num_cores = ", num_cores, "`; please resolve",
+                 call. = FALSE)
+        }
+        if (parallelism == "future") {
+            if (!requireNamespace("future.apply", quietly = TRUE)) {
+                stop("`parallelism = \"future\"` uses `package:future.apply`, ",
+                     "but it's not installed", call. = FALSE)
+            }
+            if (!is.null(num_cores)) {
+                stop("with `parallelism = \"future\"`, the `num_cores` ",
+                     "argument is not used to set up the backend; ",
+                     "use `future::plan` instead",
+                     call. = FALSE)
+            }
+        }
+        if (parallelism == "parallel") {
+            if (!requireNamespace("parallel", quietly = TRUE)) {
+                stop("`parallelism = \"parallel\"` uses `package:parallel`, ",
+                     "but it's not installed", call. = FALSE)
+            }
+        }
+    }
 
     ##------------------------------------
 
@@ -322,6 +360,7 @@ bootstrap_model <- function(base_model,
                  orig_df = orig_df)
 }
 
+
 #' @export
 #' @rdname bootstrap_model
 #' @param suppress_loading_bar
@@ -351,6 +390,7 @@ BootGlmm <- function(base_model,
                     num_cores = num_cores,
                     suppress_sampling_message = suppress_sampling_message)
 }
+
 
 #' Runs the bootstrapping of the models
 #'
@@ -382,34 +422,21 @@ bootstrap_runner <- function(bootstrap_function,
     parallelism <- match.arg(parallelism)
 
     if (parallelism == "future") {
-        if (requireNamespace("future.apply", quietly = TRUE)) {
-            return(future.apply::future_lapply(
-                                     1:resamples,
-                                     function(i){
-                                         bootstrap_function()
-                                     }))
-        }
-        warning("future.apply not installed, using base lapply",
-                call. = FALSE)
-        parallelism <- "none"
+        ## assuming end-user sets plan elsewhere
+        return(future.apply::future_lapply(
+                                 1:resamples,
+                                 function(i){
+                                     bootstrap_function()
+                                 }))
     }
 
     if (parallelism == "parallel") {
-        if (requireNamespace("parallel", quietly = TRUE)) {
-            if (is.null(num_cores)) {
-                num_cores <- parallel::detectCores() - 1
-            }
-
-            return(parallel::mclapply(1:resamples,
-                                      function(i){
-                                          bootstrap_function()
-                                      },
-                                      mc.cores = num_cores,
-                                      mc.preschedule = FALSE))
-        }
-        warning("parallel not installed, using base lapply",
-                call. = FALSE)
-        parallelism <- "none"
+        return(parallel::mclapply(1:resamples,
+                                  function(i){
+                                      bootstrap_function()
+                                  },
+                                  mc.cores = num_cores,
+                                  mc.preschedule = FALSE))
     }
 
     lapply(1:resamples, function(i) bootstrap_function())

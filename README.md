@@ -5,37 +5,59 @@
 
 <!-- badges: start -->
 
-[![CRAN
-status](https://www.r-pkg.org/badges/version/glmmboot)](https://cran.r-project.org/package=glmmboot)
 [![Travis build
 status](https://travis-ci.org/colmanhumphrey/glmmboot.svg?branch=master)](https://travis-ci.org/colmanhumphrey/glmmboot)
 [![Codecov test
 coverage](https://codecov.io/gh/colmanhumphrey/glmmboot/branch/master/graph/badge.svg)](https://codecov.io/gh/colmanhumphrey/glmmboot?branch=master)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/glmmboot)](https://cran.r-project.org/package=glmmboot)
 <!-- badges: end -->
 
 ## Overview
 
-The goal of glmmboot is to provide a simple method to create bootstrap
-confidence intervals using a wide set of models. For models with random
-effects, the default behaviour will be to block sample over the effect
-with the largest entropy (generally the one with the most levels); with
-no random effects, performs case resampling. glmmboot should work for
-models that produce multiple sets of coefficients too.
+glmmboot provides a simple interface for creating bootstrap confidence
+intervals using a wide set of models. The primary function is
+`bootstrap_model`, which has three primary arguments:
 
-The only requirements are that the model works with the function
-`update`, to change the data; and that the coefficients are extractable
-using coef(summary(model)): either directly, or stored in it as a list.
-This includes e.g. zero-inflated models, which produce two matrices of
-coefficients.
+  - `base_model`: the model run on the full data as you normally would,
+    prior to bootstrapping
+  - `base_data`: the dataset used
+  - `resamples`: how many bootstrap resamples you wish to perform
+
+## Types of bootstrapping
+
+For models with random effects:
+
+  - the default (and recommended) behaviour will be to block sample over
+    the effect with the largest entropy (generally the one with the most
+    levels)
+  - it’s also possible to specify multiple random effects to block
+    sample over
+
+With no random effects, performs case resampling: resamples each row
+with replacement.
+
+## Requirements:
+
+1.  the model should work with the function `update`, to change the data
+2.  the coefficients are extractable using `coef(summary(model))`
+
+<!-- end list -->
+
+  - either directly, i.e. this gives a matrix
+  - or it’s a list of matrices; this includes e.g. zero-inflated models,
+    which produce two matrices of coefficients
+
+## Parallel
 
 It may be desired to run this package in parallel. The best way is to
-use the `future` backend. You do that by specifying the backend
-`future::plan` setup, and then setting `parallelism = "future"`
-(although it actually calls \`future.apply::future\_lapply, so that
-should be installed too for this).
+use the `future` backend, which uses `future.apply::future_lapply`. You
+do that by specifying the backend through the `future::plan` setup, and
+then setting `parallelism = "future"`. See the Quick Use vignette for
+more.
 
-While in some cases the data will be automatically extracted, you should
-supply it manually.
+It’s also easy to use `parallel::mclapply`; again, see the Quick Use
+vignette.
 
 ## Installation
 
@@ -48,10 +70,11 @@ install.packages("glmmboot")
 Or the development version:
 
 ``` r
+## install.packages("devtools")
 devtools::install_github("ColmanHumphrey/glmmboot")
 ```
 
-## Example
+## Example: glm (no random effect)
 
 We’ll provide a quick example using glm. First we’ll set up some data:
 
@@ -65,15 +88,15 @@ y_mean <- expit(0.2 - 0.3 * x1 + 0.4 * x2)
 
 y <- rbinom(50, 1, prob = y_mean)
 
-sample_frame = data.frame(x1 = x1, x2 = x2, y = y)
+sample_frame <- data.frame(x1 = x1, x2 = x2, y = y)
 ```
 
-Typically this model is fit with logistic
-regression:
+Typically this model is fit with logistic regression:
 
 ``` r
-base_run <- glm(y ~ x1 + x2, family = binomial(link = 'logit'), data = sample_frame)
-
+base_run <- glm(y ~ x1 + x2, 
+                family = binomial(link = 'logit'), 
+                data = sample_frame)
 summary(base_run)
 # 
 # Call:
@@ -82,19 +105,19 @@ summary(base_run)
 # 
 # Deviance Residuals: 
 #     Min       1Q   Median       3Q      Max  
-# -1.9721  -1.1893   0.6845   0.8188   1.2479  
+# -1.5593  -1.2231   0.8699   1.0472   1.3109  
 # 
 # Coefficients:
 #             Estimate Std. Error z value Pr(>|z|)
-# (Intercept)  0.07193    0.59542   0.121    0.904
-# x1          -0.27602    0.40082  -0.689    0.491
-# x2           1.94072    1.21481   1.598    0.110
+# (Intercept) -0.18443    0.56700  -0.325    0.745
+# x1           0.08511    0.24379   0.349    0.727
+# x2           1.06660    1.03078   1.035    0.301
 # 
 # (Dispersion parameter for binomial family taken to be 1)
 # 
-#     Null deviance: 59.295  on 49  degrees of freedom
-# Residual deviance: 55.925  on 47  degrees of freedom
-# AIC: 61.925
+#     Null deviance: 68.029  on 49  degrees of freedom
+# Residual deviance: 66.621  on 47  degrees of freedom
+# AIC: 72.621
 # 
 # Number of Fisher Scoring iterations: 4
 ```
@@ -115,13 +138,13 @@ And the results:
 ``` r
 print(boot_results)
 #                estimate boot 2.5% boot 97.5% boot p_value base p_value
-# (Intercept)  0.07193343   -1.0371     1.2201        0.858       0.9044
-# x1          -0.27602415   -1.0552     0.4537        0.522       0.4944
-# x2           1.94072494   -0.3687     4.6163        0.124       0.1168
+# (Intercept) -0.18442765   -1.3135     1.0109        0.744       0.7464
+# x1           0.08510783   -0.3313     0.5316        0.732       0.7286
+# x2           1.06659965   -1.0620     3.0168        0.308       0.3061
 #             base 2.5% base 97.5% boot/base width
-# (Intercept)   -1.1259     1.2698       0.9422221
-# x1            -1.0824     0.5303       0.9355909
-# x2            -0.5032     4.3846       1.0198888
+# (Intercept)   -1.3251     0.9562       1.0188787
+# x1            -0.4053     0.5755       0.8797302
+# x2            -1.0071     3.1403       0.9834854
 ```
 
 The estimates are the same, since we just pull from the base model. The
@@ -164,19 +187,19 @@ summary(fit_zipoisson)
 # Number of obs: 599, groups:  nest, 27
 # 
 # Conditional model:
-#                           Estimate Std. Error z value         Pr(>|z|)    
-# (Intercept)                2.53995    0.35656   7.123 0.00000000000105 ***
-# ftSatiated                -0.29111    0.05961  -4.884 0.00000104200662 ***
-# ArrivalTime               -0.06808    0.01427  -4.771 0.00000183764044 ***
-# SexParentMale              0.44885    0.45002   0.997            0.319    
-# ftSatiated:SexParentMale   0.10473    0.07286   1.437            0.151    
-# ArrivalTime:SexParentMale -0.02140    0.01835  -1.166            0.244    
+#                           Estimate Std. Error z value Pr(>|z|)    
+# (Intercept)                2.53995    0.35656   7.123 1.05e-12 ***
+# ftSatiated                -0.29111    0.05961  -4.884 1.04e-06 ***
+# ArrivalTime               -0.06808    0.01427  -4.771 1.84e-06 ***
+# SexParentMale              0.44885    0.45002   0.997    0.319    
+# ftSatiated:SexParentMale   0.10473    0.07286   1.437    0.151    
+# ArrivalTime:SexParentMale -0.02140    0.01835  -1.166    0.244    
 # ---
 # Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 # 
 # Zero-inflation model:
-#             Estimate Std. Error z value            Pr(>|z|)    
-# (Intercept) -1.05753    0.09412  -11.24 <0.0000000000000002 ***
+#             Estimate Std. Error z value Pr(>|z|)    
+# (Intercept) -1.05753    0.09412  -11.24   <2e-16 ***
 # ---
 # Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```

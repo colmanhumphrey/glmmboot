@@ -22,28 +22,43 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-The goal of glmmboot is to provide a simple method to create
-bootstrap confidence intervals using a wide set of models. For 
-models with random effects, the default behaviour will 
-be to block sample over the effect with the largest entropy 
-(generally the one with the most levels); with no random effects,
-performs case resampling. glmmboot should work for models that produce 
-multiple sets of coefficients too.
+glmmboot provides a simple interface for creating bootstrap 
+confidence intervals using a wide set of models. The primary function
+is `bootstrap_model`, which has three primary arguments:
 
-The only requirements are that the model works with the 
-function `update`, to change the data; and that the coefficients
-are extractable using coef(summary(model)): either directly, or
-stored in it as a list. This includes e.g. zero-inflated models, which
-produce two matrices of coefficients.
+* `base_model`: the model run on the full data as you normally would, prior to bootstrapping
+* `base_data`: the dataset used
+* `resamples`: how many bootstrap resamples you wish to perform
+
+## Types of bootstrapping
+
+For models with random effects:
+
+* the default (and recommended) behaviour will be to block sample over the effect with the largest entropy 
+(generally the one with the most levels)
+* it's also possible to specify multiple random effects to block sample over
+
+With no random effects, performs case resampling: resamples each row with replacement.
+
+## Requirements:
+
+1. the model should work with the 
+function `update`, to change the data
+2. the coefficients are extractable using `coef(summary(model))`
+  + either directly, i.e. this gives a matrix
+  + or it's a list of matrices; this includes e.g. zero-inflated models, which
+produce two matrices of coefficients
+
+## Parallel
 
 It may be desired to run this package in parallel. The best way is
-to use the `future` backend. You do that by specifying the backend
-`future::plan` setup, and then setting `parallelism = "future"`
-(although it actually calls `future.apply::future_lapply, so that should be
-installed too for this).
+to use the `future` backend, which uses `future.apply::future_lapply`. 
+You do that by specifying the backend through the
+`future::plan` setup, and then setting `parallelism = "future"`. See the Quick Use 
+vignette for more.
 
-While in some cases the data will be automatically extracted, you should
-supply it manually.
+It's also easy to use `parallel::mclapply`; again, see the Quick Use 
+vignette.
 
 ## Installation
 
@@ -59,7 +74,7 @@ Or the development version:
 devtools::install_github("ColmanHumphrey/glmmboot")
 ```
 
-## Example
+## Example: glm (no random effect)
 
 We'll provide a quick example using glm. First we'll set up some data:
 
@@ -73,14 +88,15 @@ y_mean <- expit(0.2 - 0.3 * x1 + 0.4 * x2)
 
 y <- rbinom(50, 1, prob = y_mean)
 
-sample_frame = data.frame(x1 = x1, x2 = x2, y = y)
+sample_frame <- data.frame(x1 = x1, x2 = x2, y = y)
 ```
 
 Typically this model is fit with logistic regression:
 
 ```{r}
-base_run <- glm(y ~ x1 + x2, family = binomial(link = 'logit'), data = sample_frame)
-
+base_run <- glm(y ~ x1 + x2, 
+                family = binomial(link = 'logit'), 
+                data = sample_frame)
 summary(base_run)
 ```
 

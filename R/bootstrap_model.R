@@ -317,8 +317,8 @@ bootstrap_model <- function(base_model,
     error_ind <- !not_error_check(coef_se_list)
 
     if (mean(error_ind) > 0.25) {
-        warning("There area lot of errors (approx ",
-                round(100 * mean(error_ind), 1), "%)")
+        warning("There area lot of errors (approx ", # nocov start
+                round(100 * mean(error_ind), 1), "%)") # nocov end
     }
 
     ## keep going until solved

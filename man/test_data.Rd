@@ -19,7 +19,7 @@ test_data
 A small normal dataset with a proportional
 outcome to illustrate the use of this package.
 The outcome has mean
-expit(0.5 + 0.1 * x_var1 + 0.2 * x_var2 + 0.3 * x_var3 + SUBJ_VAL)
+\code{expit(0.5 + 0.1 * x_var1 + 0.2 * x_var2 + 0.3 * x_var3 + SUBJ_VAL)}
 where SUBJ_VAL are the values of the random effect
 The SD of y is then shrunk by 0.9 relative to a binomial distribution,
 and then beta values are generated. Arbitrarily close to the endpoints

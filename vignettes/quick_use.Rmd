@@ -12,29 +12,35 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#"
 )
 knitr::opts_chunk$set(cache=TRUE)
 knitr::opts_knit$set(cache.extra = 234) # seed
 ```
+# glmmboot: Quick Use
 
-For even quicker usage instructions, see the readme.
+For even quicker usage instructions, see the README.
 
 The general idea of this package is that you can throw nearly any 
 model built in the typical R fashion. For now, we just need 
 a somewhat standard way of extracting fixed effects, and that
 `update` works, which is nearly always the case. 
 
-If your model is called `base_model` for example, then 
-if `coef(summary(base_model))` or `coef(summary(base_model))$cond`
-gives the estimates and standard errors, the method will work.
+Assuming your model is called `base_model`, if
+`coef(summary(base_model))` gives the estimates and standard errors,
+the method will work.  The result of `coef` is often a list; this
+package will then produce estimates for each element of the
+list. Common examples where there are multiple sets of coefficients
+are zero-inflated models.
 
-The data should be supplied manually, although it's currently the case 
+The data should be supplied manually, although it's currently the case
 that if the dataframe that creates the model is accessible from
-`base_model$model`, `base_model$frame` or `base_model@frame`, you 
-won't have to send the data in to the function separately. Be 
-careful here - some models supply this but the method introduces bugs. 
-Much safer to supply the data explicitly.
+`base_model$model`, `base_model$frame` or `base_model@frame`, you
+won't have to send the data in to the function separately (but you
+will get a warning). Be careful here - some models supply this but the
+method introduces bugs.  Much safer to supply the data explicitly.
+
+## Standard Example
 
 Let's work through an example with `glmmTMB`. We'll use the data
 that comes with `glmmboot`.
@@ -64,10 +70,9 @@ Now we'll use the bootstrap. By default it'll perform block bootstrapping over t
 entropy random effect - but there's only one, so of course the winner is `subj`.
 
 ```{r, cache=TRUE}
-bootstrap_over_subj <- BootGlmm(base_model = base_run,
-                                resamples = 99, 
-                                base_data = test_data,
-                                num_cores = 4)
+bootstrap_over_subj <- bootstrap_model(base_model = base_run,
+                                       base_data = test_data,
+                                       resamples = 99)
 ```
 For publications etc, better to run about ten thousand resamples to avoid
 noise having much of an effect. Of course 99 is far too small, only for an example.
@@ -77,31 +82,30 @@ And comparing results:
 print(bootstrap_over_subj)
 ```
 
-This of course might take a long time. If it takes far too long on your machine,
+## Combining Runs
+
+The above might take a long time in a real setting. If it takes far too long on your machine,
 you can ideally run it on a bunch of computers. We don't want each computer to 
 output the fully processed output, only the intermediate outcome. To do this, 
 we set `return_coefs_instead = TRUE` for each run:
 ```{r, cache=TRUE}
-b_list1 <- BootGlmm(base_model = base_run,
-                    resamples = 29, 
-                    base_data = test_data,
-                    num_cores = 1,
-                    return_coefs_instead = TRUE)
-b_list2 <- BootGlmm(base_model = base_run,
-                    resamples = 30, 
-                    base_data = test_data,
-                    num_cores = 1,
-                    return_coefs_instead = TRUE)
-b_list3 <- BootGlmm(base_model = base_run,
-                    resamples = 30, 
-                    base_data = test_data,
-                    num_cores = 1,
-                    return_coefs_instead = TRUE)
+b_list1 <- bootstrap_model(base_model = base_run,
+                           base_data = test_data,
+                           resamples = 29,
+                           return_coefs_instead = TRUE)
+b_list2 <- bootstrap_model(base_model = base_run,
+                           base_data = test_data,
+                           resamples = 30,
+                           return_coefs_instead = TRUE)
+b_list3 <- bootstrap_model(base_model = base_run,
+                           base_data = test_data,
+                           resamples = 30,
+                           return_coefs_instead = TRUE)
 ```
 Combining this is simple enough. If we've used a few, we don't want to mess around with 
 even more lists, so we can enter them into the relevant function:
 ```{r, cache=TRUE}
-CombineResampledLists(b_list1, b_list2, b_list3)
+print(combine_resampled_lists(b_list1, b_list2, b_list3))
 ```
 
 If we've run a huge number of such runs, ideally we'll combine all output to a list of lists, like
@@ -111,8 +115,180 @@ list_of_lists_output <- list(b_list1, b_list2, b_list3)
 ```
 And we'll get the same result:
 ```{r, cache=TRUE}
-CombineResampledLists(list_of_lists_output)
+print(combine_resampled_lists(list_of_lists_output))
 ```
+
+You MUST set `return_coefs_instead = TRUE` for methods like these that combine output.
+
+## Parallel Options
+
+There are two primary ways to run models in parallel:
+
+1. `parallel`: this will use `parallel::mclapply` to run the models.
+2. `future`: this will use `future.apply::future_lapply` to run the models
+
+Use he parameter `parallelism` in the function `bootstrap_model()` to choose how to parallelise.
+
+### `parallelism = "none"`
+
+This is the default, and will run each model sequentially, using `lapply()`.
+If you set `num_cores` to a number greater than 1, you'll get an error with this option.
+
+This isn't the default if you set `num_cores` to a value greater than 1.
+
+### `parallelism = "parallel"`
+
+This will use `parallel::mclapply` to run the models. If you set `num_cores`,
+then that many cores will be used. If you don't set `num_cores`,
+the function will use `num_cores = parallel::detectCores() - 1`.
+
+Example:
+```{r, eval=FALSE}
+## will use `parallel::detectCores() - 1` cores
+model_results <- bootstrap_model(base_model = some_base_run,
+                                 base_data = some_interesting_data,
+                                 resamples = 9999,
+                                 parallelism = "parallel")
+
+## will use 4 cores:
+model_results <- bootstrap_model(base_model = some_base_run,
+                                 base_data = some_interesting_data,
+                                 resamples = 9999,
+                                 parallelism = "parallel",
+                                 num_cores = 4)
+```
+
+I've heard that `parallel::mclapply` doesn't play well on Windows. Instead
+of implementing `parallel::parLapply` (which I will do if there's interest), I
+would recommend using `parallelism = "future"`, see below.
+
+This becomes the default if you don't set `parallelism` but just `num_cores`.
+
+### `parallelism = "future"`
+
+This uses the very nice `future.apply::future_lapply` function to
+run the models in parallel. Note that you MUST set the `future::plan`
+(see the docs for the `future` and `future.apply` packages) to actually
+make use of multiple cores etc. Using `num_cores` is NOT the right
+way to set the backend, and will cause an error.
+
+This should work well with Windows.
+
+Example:
+```{r, eval=FALSE}
+library(future)
+plan("multiprocess") # "multiprocess" should work across Windows / Mac / Linux
+
+model_results <- bootstrap_model(base_model = some_base_run,
+                                 base_data = some_interesting_data,
+                                 resamples = 9999,
+                                 parallelism = "future")
+```
+
+### Only setting `num_cores`
+
+If you don't touch the `parallelism` argument, but just set `num_cores`, e.g.:
+```{r, eval=FALSE}
+model_results <- bootstrap_model(base_model = some_base_run,
+                                 base_data = some_interesting_data,
+                                 resamples = 9999,
+                                 num_cores = 8)
+```
+It'll be as if you set `parallelism = "parallel"`, and will use
+the `parallel::mclapply` backend (unless you set `num_cores = 1`!).
+
+### Progress Bars Etc
+
+Unfortunately currently none of these methods have any progress bars setup.
+There used to be a call to a parallel package that did this, but it seemed
+to have some bugs. Hopefully this will be possible in the future.
+
+The (not great) options for now:
+* run a small set to estimate timing before running a large set of models
+* using the split approach (see the Combining Runs approach above), print out some intermediate output between runs.
+
+Let's look at an example of the second approach, using the `future` argument. First, we'll
+write a somewhat rough logging function:
+```{r, cache=TRUE}
+log_remaining <- function(start_time,
+                          cur_time,
+                          j,
+                          total_iters,
+                          time_units = "hours"){
+    cur_time <- Sys.time()
+    total_time <- difftime(cur_time, start_time, units = time_units)
+    est_remaining <- (total_iters - j) * (total_time / j)
+    paste0("[", cur_time, "] [iteration ", j, "] ",
+           "total ", time_units, ": ", round(total_time, 3), " // ",
+           "est remaining ", time_units, ": ", round(est_remaining, 3))
+}
+```
+This looks like:
+```{r, cache=TRUE}
+total_iterations <- 5
+start_time <- Sys.time()
+for (j in 1:total_iterations) {
+    ## simulate expensive operation...
+    Sys.sleep(2)
+    
+    print(log_remaining(start_time, Sys.time(), j, total_iterations, "secs"))
+}
+```
+
+As before, don't forget `return_coefs_instead = TRUE`. We'd run:
+```{r, eval=FALSE}
+library(future)
+plan("multiprocess")
+
+results_list <- list()
+num_blocks <- 50
+runs_per_block <- 100
+
+start_time <- Sys.time()
+for (j in 1:num_blocks) {
+    results_list[[j]] <- bootstrap_model(base_model = base_run,
+                                         base_data = test_data,
+                                         resamples = runs_per_block,
+                                         parallelism = "future",
+                                         return_coefs_instead = TRUE,
+                                         suppress_sampling_message = TRUE)
+    print(log_remaining(start_time, Sys.time(), j, num_blocks, "secs"))
+}
+
+combined_results <- combine_resampled_lists(results_list)
+```
+Of course with 50 blocks of size 100, we'd get the equivalent of 5000 samples. 
+
+## Zero Inflated
+
+Let's first reuse the model from the glmmTMB vignettes:
+```{r, eval=FALSE}
+owls <- transform(Owls,
+                  nest = reorder(Nest, NegPerChick),
+                  ncalls = SiblingNegotiation,
+                  ft = FoodTreatment)
+
+fit_zipoisson <- glmmTMB(
+    ncalls ~ (ft + ArrivalTime) * SexParent +
+        offset(log(BroodSize)) + (1 | nest),
+    data = owls,
+    ziformula = ~1,
+    family = poisson)
+```
+
+We run this more or less the same way as the other models:
+```{r, eval=FALSE}
+zero_boot <- bootstrap_model(base_model = fit_zipoisson,
+                             base_data = owls,
+                             resamples = 9999)
+```
+In this case the output would be a list with two entries,
+one matrix in `zero_boot$cond`, the typical `conditional` model,
+and another matrix (in this case a single row, because `ziformula = ~1`)
+in `zero_cond$zi`, each giving the same shape output as we've seen above.
+
+In this particular model, the bootstrap model is quite conservative. Assumptions are often useful!
+
 <!---
 Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
 

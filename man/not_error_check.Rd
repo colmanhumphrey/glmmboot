@@ -12,10 +12,11 @@ e.g. lapply(1:N, bootstrap_coef_est)}
 }
 \value{
 A logical vector, TRUE if the element is indeed a list of matrices
+with non-missing entries
 }
 \description{
 For each element of the list of results
 from running bootstrap_coef_est, checks if it's
-a list of matrices
+a list of matrices, and that each matrix has no missing values
 }
 \keyword{internal}

@@ -89,6 +89,46 @@ gen_samp_lev <- function(levels,
     return(samp)
 }
 
+
+
+#' Finds all occurrences of new_vector in orig_vector
+#'
+#' For each value in new_vector, we find the indices of ALL
+#' matching values in orig_vector. This means that if new_vector
+#' has duplicates, we'll duplicate the indices from orig_vector too
+#'
+#' @param orig_vector vector to find indices from
+#' @param new_vector vector to match values to (from orig_vector)
+#' @param current_index accumulator of the indices so far, for recursion
+#' @return returns a vector of indices from orig_vector that correspond to
+#' values in new_vector
+#'
+#' @examples
+#'
+#' \donttest{
+#'     orig_vector <- c(1, 1, 2, 3, 3, 3)
+#'     new_vector <- c(1, 2, 1)
+#'
+#'     vector_match <- gen_vector_match(orig_vector, new_vector)
+#'     ## testthat::expect_equal(vector_match, c(1, 2, 3, 1, 2))
+#' }
+#'
+#' @keywords internal
+gen_vector_match <- function(orig_vector,
+                             new_vector,
+                             current_index = vector("integer", 0)){
+    if (length(new_vector) == 0){
+        return(current_index)
+    }
+    ## this is TCOable, but the trampolining version was twice as slow
+    dups <- duplicated(new_vector)
+    gen_vector_match(orig_vector,
+                     new_vector[dups],
+                     c(current_index,
+                       which(orig_vector %in% new_vector[!dups])))
+}
+
+
 #' Given resampled vectors, gives matching index of original variables
 #'
 #' this function takes in original vectors, and resampled editions,
@@ -113,17 +153,21 @@ gen_resampling_index <- function(orig_list,
              call. = FALSE)
     }
 
-    ## this stupid solution is surpringly not that slow?
-    orig_strings <- do.call(paste, orig_list)
-    sampled_strings <- do.call(paste, expand.grid(sampled_list))
+    ## coercing to character means this works for all types
+    ## but we have to worry about accidental equality
+    ## e.g. ("a b", "c") vs ("a" "b c") (and even worse, all "a")
+    paste_under <- function(...){
+        paste(..., sep = "_")
+    }
+    orig_strings <- paste0(do.call(paste, orig_list),
+                           do.call(paste_under, rev(orig_list)))
+    sampled_strings <- paste0(
+        do.call(paste, expand.grid(sampled_list)),
+        do.call(paste_under, rev(expand.grid(sampled_list))))
 
-    all_ind_list <- lapply(sampled_strings, function(str){
-        which(orig_strings == str)})
-
-    all_ind <- unlist(all_ind_list)
-
-    all_ind
+    gen_vector_match(orig_strings, sampled_strings)
 }
+
 
 #' this takes in a formula with bars
 #' and gives back the plain names of the columns
@@ -237,7 +281,7 @@ list_of_matrices <- function(list_to_check,
 #'
 #' For each element of the list of results
 #' from running bootstrap_coef_est, checks if it's
-#' a list of matrices
+#' a list of matrices, and that each matrix has no missing values
 #'
 #' @param coef_list_list
 #' list of results from running bootstrap_coef_est,
@@ -245,12 +289,14 @@ list_of_matrices <- function(list_to_check,
 #'
 #' @return
 #' A logical vector, TRUE if the element is indeed a list of matrices
+#' with non-missing entries
 #'
 #' @keywords internal
 not_error_check <- function(coef_list_list){
     unlist(lapply(coef_list_list, function(coef_list){
         all(unlist(lapply(coef_list, function(coef_maybe_mat){
-            "matrix" %in% class(coef_maybe_mat)
+            "matrix" %in% class(coef_maybe_mat) &&
+                !anyNA(coef_maybe_mat)
         })))
     }))
 }

@@ -24,6 +24,10 @@ intervals using a wide set of models. The primary function is
   - `base_data`: the dataset used
   - `resamples`: how many bootstrap resamples you wish to perform
 
+Another function, `bootstrap_ci`, converts output from bootstrap model
+runs into confidence intervals and p-values. By default,
+`bootstrap_model` calls `bootstrap_ci`.
+
 ## Types of bootstrapping
 
 For models with random effects:
@@ -105,19 +109,19 @@ summary(base_run)
 # 
 # Deviance Residuals: 
 #     Min       1Q   Median       3Q      Max  
-# -1.5593  -1.2231   0.8699   1.0472   1.3109  
+# -1.6806  -1.2252   0.7634   0.9705   1.4004  
 # 
 # Coefficients:
 #             Estimate Std. Error z value Pr(>|z|)
-# (Intercept) -0.18443    0.56700  -0.325    0.745
-# x1           0.08511    0.24379   0.349    0.727
-# x2           1.06660    1.03078   1.035    0.301
+# (Intercept)  -0.2155     0.6566  -0.328    0.743
+# x1           -0.3482     0.3566  -0.976    0.329
+# x2            1.3228     1.0978   1.205    0.228
 # 
 # (Dispersion parameter for binomial family taken to be 1)
 # 
-#     Null deviance: 68.029  on 49  degrees of freedom
-# Residual deviance: 66.621  on 47  degrees of freedom
-# AIC: 72.621
+#     Null deviance: 66.406  on 49  degrees of freedom
+# Residual deviance: 63.482  on 47  degrees of freedom
+# AIC: 69.482
 # 
 # Number of Fisher Scoring iterations: 4
 ```
@@ -137,14 +141,14 @@ And the results:
 
 ``` r
 print(boot_results)
-#                estimate boot 2.5% boot 97.5% boot p_value base p_value
-# (Intercept) -0.18442765   -1.3135     1.0109        0.744       0.7464
-# x1           0.08510783   -0.3313     0.5316        0.732       0.7286
-# x2           1.06659965   -1.0620     3.0168        0.308       0.3061
+#               estimate boot 2.5% boot 97.5% boot p_value base p_value
+# (Intercept) -0.2155373   -1.4750     1.0956        0.808       0.7442
+# x1          -0.3482040   -1.0260     0.2810        0.292       0.3339
+# x2           1.3227985   -0.9238     3.5494        0.284       0.2342
 #             base 2.5% base 97.5% boot/base width
-# (Intercept)   -1.3251     0.9562       1.0188787
-# x1            -0.4053     0.5755       0.8797302
-# x2            -1.0071     3.1403       0.9834854
+# (Intercept)   -1.5365     1.1055       0.9729597
+# x1            -1.0656     0.3692       0.9108336
+# x2            -0.8856     3.5312       1.0127649
 ```
 
 The estimates are the same, since we just pull from the base model. The

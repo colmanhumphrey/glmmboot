@@ -50,6 +50,12 @@ test_that("testing gen_vector_match", {
 })
 
 test_that("testing gen_resampling_index", {
+
+    expect_error(gen_resampling_index(
+        list(a = 1:3, b = 4:6, d = letters),
+        list(a = 1:3, d = letters)))
+
+    ##------------------------------------
     factor_1 <- factor(LETTERS[rep(5:14, each = 10)])
     factor_2 <- factor(
         c("apple", "banana", "carrot", "durian")[rep(1:4, times = 25)])
@@ -149,6 +155,9 @@ test_that("testing list_of_matrices", {
     expect_equal(
         unlist(lapply(listlist_of_maybe_matrices, list_of_matrices)),
         c(TRUE, TRUE, TRUE, FALSE, FALSE))
+
+    expect_false(list_of_matrices(1:10))
+    expect_false(list_of_matrices(list()))
 })
 
 test_that("testing not_error_check", {

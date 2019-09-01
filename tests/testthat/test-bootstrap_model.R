@@ -17,6 +17,76 @@ test_that("bootstrap_model returns matrix when asked, lists when asked", {
                               resamples = 20,
                               return_coefs_instead = TRUE)),
         "list")
+
+    expect_equal(
+        class(bootstrap_model(base_model = simple_model,
+                              base_data = xy_data,
+                              resamples = 20,
+                              narrowness_avoid = FALSE,
+                              return_coefs_instead = TRUE)),
+        "list")    
+})
+
+test_that("bootstrap_model works on test_data", {
+    if (!requireNamespace("glmmTMB", quietly = TRUE)) {
+        skip("need glmmTMB to be installed for default test_data run")
+    }
+
+    data(test_data)
+
+    library(glmmTMB)
+    model_formula <- as.formula(y ~ x_var1 + x_var2 + x_var2 + (1 | subj))
+    base_run <- suppressWarnings(glmmTMB(formula = model_formula,
+                                         data = test_data,
+                                         family = binomial))
+
+    test_run <- bootstrap_model(base_model = base_run,
+                                base_data = test_data,
+                                resamples = 20)
+    expect_is(test_run, "matrix")
+    ## estimate doesn't change:
+    expect_equal(test_run[, "estimate"],
+                 coef(summary(base_run))$cond[, "Estimate"])
+
+    ##------------------------------------
+    ## adding second random effect, and using it
+    targ_data <- test_data
+    targ_data$targ <- sample(letters[1:10], size = 300, replace = TRUE)
+    
+    targ_model_formula <- as.formula(y ~ x_var1 + x_var2 + x_var2 +
+                                    (1 | subj) + (1 | targ))
+    base_run <- suppressWarnings(glmmTMB(formula = targ_model_formula,
+                                         data = targ_data,
+                                         family = binomial))
+    expect_error(bootstrap_model(base_model = base_run,
+                                base_data = targ_data,
+                                resamples = 20),
+                 NA)
+
+    test_run <- bootstrap_model(base_model = base_run,
+                                base_data = targ_data,
+                                resamples = 20,
+                                resample_specific_blocks = "targ")
+    expect_is(test_run, "matrix")
+    ## estimate doesn't change:
+    expect_equal(test_run[, "estimate"],
+                 coef(summary(base_run))$cond[, "Estimate"])
+
+    expect_error(bootstrap_model(base_model = base_run,
+                                 base_data = targ_data,
+                                 resamples = 20,
+                                 resample_specific_blocks = "unknown_var"))
+
+    ##------------------------------------
+    ## hitting some errors, thus redoing etc
+
+    small_data <- test_data[1:6, ]
+    small_base_run <- suppressWarnings(glmmTMB(formula = model_formula,
+                                               data = test_data,
+                                               family = binomial))
+    expect_warning(bootstrap_model(base_model = small_base_run,
+                                   base_data = small_data,
+                                   resamples = 20))
 })
 
 test_that("bootstrap_model fails when there is no data", {
@@ -86,6 +156,13 @@ test_that("bootstrap_model parallelism modes", {
                                  num_cores = 1,
                                  suppress_sampling_message = TRUE),
                  NA)
+    expect_error(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 parallelism = "parallel",
+                                 num_cores = 2,
+                                 suppress_sampling_message = TRUE),
+                 NA)    
     expect_error(bootstrap_model(base_model = simple_model,
                                  base_data = xy_data,
                                  resamples = 20,

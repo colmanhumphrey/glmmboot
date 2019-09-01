@@ -105,11 +105,13 @@ gen_samp_lev <- function(levels,
 #'
 #' @examples
 #'
-#' orig_vector <- c(1, 1, 2, 3, 3, 3)
-#' new_vector <- c(1, 2, 1)
+#' \donttest{
+#'     orig_vector <- c(1, 1, 2, 3, 3, 3)
+#'     new_vector <- c(1, 2, 1)
 #'
-#' vector_match <- gen_vector_match(orig_vector, new_vector)
-#' ## testthat::expect_equal(vector_match, c(1, 2, 3, 1, 2))
+#'     vector_match <- gen_vector_match(orig_vector, new_vector)
+#'     ## testthat::expect_equal(vector_match, c(1, 2, 3, 1, 2))
+#' }
 #'
 #' @keywords internal
 gen_vector_match <- function(orig_vector,

@@ -168,6 +168,7 @@ gen_resampling_index <- function(orig_list,
     gen_vector_match(orig_strings, sampled_strings)
 }
 
+
 #' this takes in a formula with bars
 #' and gives back the plain names of the columns
 #'

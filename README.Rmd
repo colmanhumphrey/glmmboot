@@ -7,12 +7,20 @@ output: github_document
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
+  comment = "#",
   fig.path = "README-"
 )
 ```
 
 # glmmboot
+
+<!-- badges: start -->
+[![Travis build status](https://travis-ci.org/colmanhumphrey/glmmboot.svg?branch=master)](https://travis-ci.org/colmanhumphrey/glmmboot)
+[![Codecov test coverage](https://codecov.io/gh/colmanhumphrey/glmmboot/branch/master/graph/badge.svg)](https://codecov.io/gh/colmanhumphrey/glmmboot?branch=master)
+[![CRAN status](https://www.r-pkg.org/badges/version/glmmboot)](https://cran.r-project.org/package=glmmboot)
+<!-- badges: end -->
+
+## Overview
 
 The goal of glmmboot is to provide a simple method to create
 bootstrap confidence intervals using a wide set of models. For 
@@ -47,6 +55,7 @@ install.packages("glmmboot")
 
 Or the development version:
 ```{r gh-installation, eval = FALSE}
+## install.packages("devtools")
 devtools::install_github("ColmanHumphrey/glmmboot")
 ```
 

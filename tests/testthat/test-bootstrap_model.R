@@ -25,6 +25,10 @@ test_that("bootstrap_model fails when there is no data", {
     xy_data <- data.frame(x = x, y = y)
     simple_model <- lm(y ~ x, data = xy_data)
 
+    ## warning if there is
+    expect_warning(bootstrap_model(base_model = simple_model,
+                                   resamples = 20))
+
     simple_model_nodata <- simple_model
     simple_model_nodata$model <- NULL
 
@@ -65,8 +69,8 @@ test_that("bootstrap_model works on zero-inflated models", {
 })
 
 test_that("bootstrap_model parallelism modes", {
-    x <- rnorm(10)
-    y <- rnorm(10)
+    x <- rnorm(20)
+    y <- rnorm(20)
     xy_data <- data.frame(x = x, y = y)
     simple_model <- lm(y ~ x, data = xy_data)
 

@@ -367,7 +367,7 @@ bootstrap_model <- function(base_model,
 #' defunct now
 #' @param allow_conv_error
 #' defunct now
-BootGlmm <- function(base_model,
+BootGlmm <- function(base_model, # nocov start
                      resamples = 9999,
                      base_data = NULL,
                      return_coefs_instead = FALSE,
@@ -389,8 +389,7 @@ BootGlmm <- function(base_model,
                     narrowness_avoid = narrowness_avoid,
                     num_cores = num_cores,
                     suppress_sampling_message = suppress_sampling_message)
-}
-
+} # nocov end
 
 #' Runs the bootstrapping of the models
 #'

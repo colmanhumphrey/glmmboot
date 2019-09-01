@@ -82,7 +82,7 @@ bootstrap_ci <- function(base_coef_se = NULL,
     }, base_coef_se, resampled_coef_lists)
 
     ## controversial: in many cases there's just one list, so just send it
-    if(length(ci_results) == 1){
+    if (length(ci_results) == 1) {
         return(ci_results[[1]])
     }
 
@@ -161,7 +161,7 @@ bootstrap_individual_ci <- function(base_matrix = NULL,
     use_df <- ifelse(is.null(orig_df), Inf, orig_df)
     t_base_vals <- qt(probs, df = use_df)
 
-    if(nrow(base_matrix) > 1){
+    if (nrow(base_matrix) > 1) {
         base_mat <- cbind(
             sapply(t_base_vals, function(x){
                 base_matrix[, 1] + x * base_matrix[, 2]
@@ -185,7 +185,7 @@ bootstrap_individual_ci <- function(base_matrix = NULL,
         "base p_value"
     )
 
-    if(nrow(base_matrix) > 1){
+    if (nrow(base_matrix) > 1) {
         ret_matrix <- cbind(
             "estimate" = base_matrix[, 1],
             round(conf_ind, 4),
@@ -268,7 +268,7 @@ ci_variable <- function(base_est,
 #' @export
 #' @param alp_level
 #' now alpha_level
-BootCI <- function(base_coef_se = NULL,
+BootCI <- function(base_coef_se = NULL, # nocov start
                    resampled_coef_se = NULL,
                    orig_df = NULL,
                    alp_level = 0.05,
@@ -279,7 +279,7 @@ BootCI <- function(base_coef_se = NULL,
                  orig_df = orig_df,
                  alpha_level = alp_level,
                  probs = probs)
-}
+} # nocov end
 
 #' Combines output from multiple bootstrap_model calls
 #'
@@ -374,9 +374,9 @@ combine_resampled_lists <- function(...,
 
 #' @rdname combine_resampled_lists
 #' @export
-CombineResampledLists <- function(...,
+CombineResampledLists <- function(..., # nocov start
                                   return_combined_list = FALSE){
     .Deprecated("combine_resampled_lists")
     combine_resampled_lists(...,
                             return_combined_list = return_combined_list)
-}
+} # nocov end

@@ -98,10 +98,10 @@ bootstrap_ci <- function(base_coef_se = NULL,
 #'
 #' @keywords internal
 bootstrap_individual_ci <- function(base_matrix = NULL,
-                                   resampled_coef_list = NULL,
-                                   orig_df = NULL,
-                                   alpha_level = 0.05,
-                                   probs = NULL){
+                                    resampled_coef_list = NULL,
+                                    orig_df = NULL,
+                                    alpha_level = 0.05,
+                                    probs = NULL){
     if (is.null(probs)) {
         if (alpha_level < 0 | alpha_level > 0.5) {
             stop("Can't calculate a two-sided CI with this alpha value, ",
@@ -109,7 +109,7 @@ bootstrap_individual_ci <- function(base_matrix = NULL,
         }
         probs <- sort(c(alpha_level / 2, 1 - alpha_level / 2))
     }
-    if (max(probs) > 1 | min(probs) < 0) {
+    if (max(probs) > 1 || min(probs) < 0) {
         stop("Probabilities should be in (0,1)", call. = FALSE)
     }
 

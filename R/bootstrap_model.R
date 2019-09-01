@@ -136,9 +136,9 @@ bootstrap_model <- function(base_model,
         if ("model" %in% names(base_model)) {
             base_data <- base_model$model
         } else if ("frame" %in% names(base_model)) {
-            base_data <- base_model$frame
+            base_data <- base_model$frame # nocov
         } else if ("frame" %in% slotNames(base_model)) {
-            base_data <- base_model@frame
+            base_data <- base_model@frame # nocov
         } else {
             stop("base_data cannot be automatically inferred, ",
                  "please supply data as base_data ",
@@ -150,12 +150,12 @@ bootstrap_model <- function(base_model,
         if (!is.null(num_cores) && num_cores > 1) {
             ## if just the num_cores argument is used, we'll
             ## assume parallel::mclapply is desired
-            if (!requireNamespace("parallel", quietly = TRUE)) {
+            if (!requireNamespace("parallel", quietly = TRUE)) { # nocov start
                 stop("setting `num_cores` greater than 1 without setting ",
                      "`parallelism` uses `package:parallel`, ",
                      "but it's not installed", call. = FALSE)
             }
-            parallelism <- "parallel"
+            parallelism <- "parallel"  # nocov end
         } else {
             parallelism <- "none"
         }
@@ -167,10 +167,10 @@ bootstrap_model <- function(base_model,
                  call. = FALSE)
         }
         if (parallelism == "future") {
-            if (!requireNamespace("future.apply", quietly = TRUE)) {
+            if (!requireNamespace("future.apply", quietly = TRUE)) { # nocov start
                 stop("`parallelism = \"future\"` uses `package:future.apply`, ",
                      "but it's not installed", call. = FALSE)
-            }
+            } # nocov end
             if (!is.null(num_cores)) {
                 stop("with `parallelism = \"future\"`, the `num_cores` ",
                      "argument is not used to set up the backend; ",
@@ -179,10 +179,10 @@ bootstrap_model <- function(base_model,
             }
         }
         if (parallelism == "parallel") {
-            if (!requireNamespace("parallel", quietly = TRUE)) {
+            if (!requireNamespace("parallel", quietly = TRUE)) { # nocov start
                 stop("`parallelism = \"parallel\"` uses `package:parallel`, ",
                      "but it's not installed", call. = FALSE)
-            }
+            } # nocov end
         }
     }
 
@@ -204,8 +204,8 @@ bootstrap_model <- function(base_model,
         main_coef_se <- extract_coef(base_model)
     } else {
         if (!list_of_matrices(base_coef)) {
-            stop("currently this method needs `coef(summary(base_model))` ",
-                 "to be a matrix, or a list of them", call. = FALSE)
+            stop("currently this method needs `coef(summary(base_model))` ", # nocov start
+                 "to be a matrix, or a list of them", call. = FALSE) # nocov end
         }
         ## only calc not_null once, but local scope the result
         extract_coef <- (function(not_null){
@@ -336,10 +336,9 @@ bootstrap_model <- function(base_model,
         error_ind <- !not_error_check(coef_se_list)
     }
     if (any(error_ind)) {
-        warning("could not generate error-free resamples in ",
-                max_redos, " attempts; returning ", sum(error_ind),
-                " error(s) out of ", resamples, " total",
-                call. = FALSE)
+        stop("could not generate error-free resamples in ", # nocov start
+             max_redos, " attempts",
+             call. = FALSE) # nocov end
     }
 
     if (return_coefs_instead) {

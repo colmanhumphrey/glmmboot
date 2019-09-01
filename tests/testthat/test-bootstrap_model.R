@@ -35,7 +35,7 @@ test_that("bootstrap_model fails when there is no data", {
 })
 
 test_that("bootstrap_model works on zero-inflated models", {
-    if(!requireNamespace("glmmTMB", quietly = TRUE)){
+    if (!requireNamespace("glmmTMB", quietly = TRUE)) {
         skip("need glmmTMB to be installed for zero-inflated")
     }
 

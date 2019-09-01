@@ -185,7 +185,7 @@ bootstrap_model <- function(base_model,
 
     ## deciding on random blocks. Subset of rand_cols:
     if (is.null(resample_specific_blocks)) {
-        if(length(rand_cols) > 1){
+        if (length(rand_cols) > 1) {
             entropy_levels <- unlist(lapply(rand_cols, function(rc){
                 calc_entropy(base_data[, rc])
             }))

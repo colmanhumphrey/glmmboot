@@ -24,7 +24,7 @@ test_that("bootstrap_model returns matrix when asked, lists when asked", {
                               resamples = 20,
                               narrowness_avoid = FALSE,
                               return_coefs_instead = TRUE)),
-        "list")    
+        "list")
 })
 
 test_that("bootstrap_model works on test_data", {
@@ -52,7 +52,7 @@ test_that("bootstrap_model works on test_data", {
     ## adding second random effect, and using it
     targ_data <- test_data
     targ_data$targ <- sample(letters[1:10], size = 300, replace = TRUE)
-    
+
     targ_model_formula <- as.formula(y ~ x_var1 + x_var2 + x_var2 +
                                     (1 | subj) + (1 | targ))
     base_run <- suppressWarnings(glmmTMB(formula = targ_model_formula,
@@ -159,13 +159,6 @@ test_that("bootstrap_model parallelism modes", {
     expect_error(bootstrap_model(base_model = simple_model,
                                  base_data = xy_data,
                                  resamples = 20,
-                                 parallelism = "parallel",
-                                 num_cores = 2,
-                                 suppress_sampling_message = TRUE),
-                 NA)    
-    expect_error(bootstrap_model(base_model = simple_model,
-                                 base_data = xy_data,
-                                 resamples = 20,
                                  parallelism = "none",
                                  num_cores = NULL,
                                  suppress_sampling_message = TRUE),
@@ -186,6 +179,15 @@ test_that("bootstrap_model parallelism modes", {
                                  resamples = 20,
                                  parallelism = "future",
                                  num_cores = NULL,
+                                 suppress_sampling_message = TRUE),
+                 NA)
+
+    skip_on_os("windows")
+    expect_error(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 parallelism = "parallel",
+                                 num_cores = 2,
                                  suppress_sampling_message = TRUE),
                  NA)
 })

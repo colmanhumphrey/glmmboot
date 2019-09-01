@@ -24,6 +24,7 @@ Suggests:
     parallel (>= 3.0.0),
     future.apply (>= 1.1.0),
     knitr,
-    rmarkdown
+    rmarkdown,
+    covr
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr

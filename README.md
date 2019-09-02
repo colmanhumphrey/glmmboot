@@ -109,19 +109,19 @@ summary(base_run)
 # 
 # Deviance Residuals: 
 #     Min       1Q   Median       3Q      Max  
-# -1.6806  -1.2252   0.7634   0.9705   1.4004  
+# -1.5543  -1.2859   0.8632   0.9769   1.2337  
 # 
 # Coefficients:
 #             Estimate Std. Error z value Pr(>|z|)
-# (Intercept)  -0.2155     0.6566  -0.328    0.743
-# x1           -0.3482     0.3566  -0.976    0.329
-# x2            1.3228     1.0978   1.205    0.228
+# (Intercept)   0.3403     0.5334   0.638    0.523
+# x1           -0.2684     0.2883  -0.931    0.352
+# x2            0.2708     0.9480   0.286    0.775
 # 
 # (Dispersion parameter for binomial family taken to be 1)
 # 
 #     Null deviance: 66.406  on 49  degrees of freedom
-# Residual deviance: 63.482  on 47  degrees of freedom
-# AIC: 69.482
+# Residual deviance: 65.414  on 47  degrees of freedom
+# AIC: 71.414
 # 
 # Number of Fisher Scoring iterations: 4
 ```
@@ -142,13 +142,13 @@ And the results:
 ``` r
 print(boot_results)
 #               estimate boot 2.5% boot 97.5% boot p_value base p_value
-# (Intercept) -0.2155373   -1.4750     1.0956        0.808       0.7442
-# x1          -0.3482040   -1.0260     0.2810        0.292       0.3339
-# x2           1.3227985   -0.9238     3.5494        0.284       0.2342
+# (Intercept)  0.3403002   -0.5647     1.3247        0.516       0.5266
+# x1          -0.2683814   -0.8386     0.2789        0.372       0.3566
+# x2           0.2708438   -1.3674     2.0126        0.778       0.7764
 #             base 2.5% base 97.5% boot/base width
-# (Intercept)   -1.5365     1.1055       0.9729597
-# x1            -1.0656     0.3692       0.9108336
-# x2            -0.8856     3.5312       1.0127649
+# (Intercept)   -0.7327     1.4133       0.8804217
+# x1            -0.8483     0.3116       0.9634510
+# x2            -1.6363     2.1780       0.8861446
 ```
 
 The estimates are the same, since we just pull from the base model. The
@@ -220,12 +220,12 @@ zi_results <- bootstrap_model(base_model = fit_zipoisson,
 print(zi_results)
 # $cond
 #                              estimate boot 2.5% boot 97.5% boot p_value
-# (Intercept)                2.53994692    2.4870     2.9761          0.5
-# ftSatiated                -0.29110639   -0.6201    -0.2911          0.5
-# ArrivalTime               -0.06807809   -0.0863    -0.0663          0.5
-# SexParentMale              0.44884508   -1.0627     0.4488          1.0
-# ftSatiated:SexParentMale   0.10472505   -0.0347     0.1728          1.0
-# ArrivalTime:SexParentMale -0.02139750   -0.0214     0.0451          1.0
+# (Intercept)                2.53994692    1.2486     2.9952          0.5
+# ftSatiated                -0.29110639   -0.3479    -0.0040          0.5
+# ArrivalTime               -0.06807809   -0.0927    -0.0192          0.5
+# SexParentMale              0.44884508   -0.7715     0.9317          1.0
+# ftSatiated:SexParentMale   0.10472505    0.0444     0.2690          0.5
+# ArrivalTime:SexParentMale -0.02139750   -0.0430     0.0299          1.0
 #                           base p_value base 2.5% base 97.5%
 # (Intercept)                     0.0000    1.8411     3.2388
 # ftSatiated                      0.0000   -0.4079    -0.1743
@@ -234,18 +234,18 @@ print(zi_results)
 # ftSatiated:SexParentMale        0.1506   -0.0381     0.2475
 # ArrivalTime:SexParentMale       0.2436   -0.0574     0.0146
 #                           boot/base width
-# (Intercept)                     0.3498814
-# ftSatiated                      1.4080066
-# ArrivalTime                     0.3581549
-# SexParentMale                   0.8568378
-# ftSatiated:SexParentMale        0.7262668
-# ArrivalTime:SexParentMale       0.9250336
+# (Intercept)                     1.2495857
+# ftSatiated                      1.4714964
+# ArrivalTime                     1.3134953
+# SexParentMale                   0.9654847
+# ftSatiated:SexParentMale        0.7864098
+# ArrivalTime:SexParentMale       1.0127490
 # 
 # $zi
 #              estimate boot 2.5% boot 97.5% boot p_value base p_value
-# (Intercept) -1.057534   -1.0738    -0.9611          0.5            0
+# (Intercept) -1.057534   -1.0575     -0.788          0.5            0
 #             base 2.5% base 97.5% boot/base width
-# (Intercept)    -1.242    -0.8731       0.3055893
+# (Intercept)    -1.242    -0.8731       0.7306774
 ```
 
 We could also have run this with the `future.apply` backend:

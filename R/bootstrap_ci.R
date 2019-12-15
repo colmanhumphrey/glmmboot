@@ -1,45 +1,34 @@
-#' Generating bootstrap confidence intervals
+#' Generating bootstrap confidence intervals.
 #'
 #' Enter first level estimates and second level estimates,
 #' get bootstrap interval, from the pivotal bootstrap t
 #' (Efron and Tibshirani 1994, also endorsed
 #' by Hesterberg 2015).
-#'
-#' @param base_coef_se
-#'   Estimates and SEs from full sample. In matrix form:
-#'   i.e. a (p+1) x 2 matrix, first column is estimates,
-#'   second is standard errors. This
-#'   is the output from using:
-#'   coef(summary(model_output))[,1:2, drop = FALSE]
+#' @param base_coef_se Estimates and SEs from full sample. In matrix form,
+#'   i.e. a \eqn{(p+1) x 2} matrix, first column is estimates,
+#'   second is standard errors. This is the output from using:
+#'   \code{coef(summary(model_output))[,1:2, drop = FALSE]}
 #'   or
-#'   coef(summary(model_output))$cond[,1:2, drop = FALSE]
-#'   if model_output is the output from a random
-#'   effects model (some may not have cond as the correct pull).
-#'
-#' @param resampled_coef_se
-#'   List of estimates and SEs from the bootstrapped resamples,
-#'   each list entry has the same format as the base_coef_se above.
-#'
-#' @param orig_df
-#'   Degrees of freedom to use to calculate the
+#'   \code{coef(summary(model_output))$cond[,1:2, drop = FALSE]}
+#'   if \code{model_output} is the output from a random
+#'   effects model (some may not have \code{cond} as the correct pull).
+#' @param resampled_coef_se List of estimates and SEs from the bootstrapped
+#'   resamples, each list entry has the same format as the base_coef_se above.
+#' @param orig_df Degrees of freedom to use to calculate the
 #'   t-values used for the base interval.
-#'
 #' @param alpha_level
 #'   level of CI - if you fill in \code{probs}, will use those instead
-#'
-#' @param probs
-#'   Default NULL, and will use alpha_level to set
+#' @param probs Default \code{NULL}, and will use \code{alpha_level} to set
 #'   endpoints. Else will calculate these CI endpoints.
-#'
-#' @return
-#'   A matrix containing:
-#'     Estimates;
-#'     Bootstrap interval endpoints;
-#'     Bootstrap p-value;
-#'     Base p-value;
-#'     Base interval endpoints;
-#'     Relative width of bootstrap interval to base
-#'
+#' @return A matrix containing:
+#'   \itemize{
+#'    \item Estimates
+#'    \item Bootstrap interval endpoints
+#'    \item Bootstrap p-value
+#'    \item Base p-value
+#'    \item Base interval endpoints
+#'    \item Relative width of bootstrap interval to base
+#'   }
 #' @examples
 #' x <- rnorm(20)
 #' y <- rnorm(20) + x
@@ -75,10 +64,10 @@ bootstrap_ci <- function(base_coef_se = NULL,
 
     ci_results <- Map(function(base_matrix, resampled_coef_list){
         bootstrap_individual_ci(base_matrix,
-                               resampled_coef_list,
-                               orig_df = orig_df,
-                               alpha_level = alpha_level,
-                               probs = probs)
+                                resampled_coef_list,
+                                orig_df = orig_df,
+                                alpha_level = alpha_level,
+                                probs = probs)
     }, base_coef_se, resampled_coef_lists)
 
     ## controversial: in many cases there's just one list, so just send it
@@ -92,10 +81,7 @@ bootstrap_ci <- function(base_coef_se = NULL,
 #' Runs the bootstrap estimation method for a single set of coefs (not a list)
 #'
 #' @inheritParams bootstrap_ci
-#'
-#' @return
-#'   Returns a matrix result
-#'
+#' @return Returns a matrix result
 #' @keywords internal
 bootstrap_individual_ci <- function(base_matrix = NULL,
                                     resampled_coef_list = NULL,

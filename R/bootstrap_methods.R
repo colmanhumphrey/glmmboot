@@ -221,7 +221,7 @@ get_rand <- function(form_with_bars){
 #' @keywords internal
 find_bars <- function(form_with_bars){
     ## if it's just text right now, convert it
-    if (!("formula" %in% class(form_with_bars))) {
+    if (!inherits(form_with_bars, "formula")) {
         form_with_bars <- as.formula(form_with_bars)
     }
 
@@ -258,7 +258,7 @@ calc_entropy <- function(level_vector){
 #' @keywords internal
 list_of_matrices <- function(list_to_check,
                              allow_null = TRUE){
-    if (!("list" %in% class(list_to_check))) {
+    if (!inherits(list_to_check, "list")) {
         return(FALSE)
     }
 
@@ -267,7 +267,7 @@ list_of_matrices <- function(list_to_check,
     }
 
     all(unlist(lapply(list_to_check, function(maybe_mat){
-        if ("matrix" %in% class(maybe_mat)) {
+        if (is.matrix(maybe_mat)) {
             return(TRUE)
         }
         if (allow_null && is.null(maybe_mat)) {
@@ -295,8 +295,7 @@ list_of_matrices <- function(list_to_check,
 not_error_check <- function(coef_list_list){
     unlist(lapply(coef_list_list, function(coef_list){
         all(unlist(lapply(coef_list, function(coef_maybe_mat){
-            "matrix" %in% class(coef_maybe_mat) &&
-                !anyNA(coef_maybe_mat)
+            is.matrix(coef_maybe_mat) && !anyNA(coef_maybe_mat)
         })))
     }))
 }

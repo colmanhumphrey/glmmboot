@@ -162,7 +162,7 @@ get_rand <- function(form_with_bars){
     first_pass <- unlist(
         lapply(findbar_list,
                function(x){
-                   if (inherits(x "call")) {
+                   if (inherits(x, "call")) {
                        return(as.character(x[3])) # nocov
                    } else {
                        first_bar <- unlist(gregexpr("|", x, fixed = TRUE))[[1]]
@@ -240,11 +240,11 @@ list_of_matrices <- function(list_to_check,
 }
 
 
-#' Checks if the result of bootstrap_coef_est is not error
+#' Checks if the result of \code{bootstrap_coef_est} is not error
 #'
-#' For each element of the list of results
-#' from running bootstrap_coef_est, checks if it's
-#' a list of matrices, and that each matrix has no missing values
+#' For each element of the list of results from running
+#' \code{bootstrap_coef_est}, checks if it's a list of matrices,
+#' and that each matrix has no missing values
 #' @param coef_list_list List of results from running \code{bootstrap_coef_est},
 #'   e.g. \code{lapply(1:N, bootstrap_coef_est)}
 #' @return A logical vector, \code{TRUE} if the element is indeed

@@ -50,7 +50,8 @@
 #'   depending on existence of random effects). If \code{FALSE}, will do
 #'   typical size n resampling.
 #' @param num_cores How many cores to use.
-#'   Defaults to parallel::detectCores() - 1 if parallelism = "parallel"
+#'   Defaults to \code{parallel::detectCores() - 1L} if
+#'   \code{parallelism = "parallel"}
 #' @param suppress_sampling_message Logical, the default is
 #'   to supress if not in an interactive session.
 #'   Do you want the function to message the console with the type of
@@ -165,6 +166,12 @@ bootstrap_model <- function(base_model,
                 stop("`parallelism = \"parallel\"` uses `package:parallel`, ",
                      "but it's not installed", call. = FALSE)
             } # nocov end
+
+            if (is.null(num_cores)) {
+                num_cores <- max(parallel::detectCores() - 1L, 1L)
+                message("`num_cores` not set, defaulting to ", num_cores,
+                        " (`parallel::detectCores() - 1L`)")
+            }
         }
     }
 

@@ -2,21 +2,21 @@
 % Please edit documentation in R/bootstrap_methods.R
 \name{not_error_check}
 \alias{not_error_check}
-\title{Checks if the result of bootstrap_coef_est is not error}
+\title{Checks if the result of \code{bootstrap_coef_est} is not error}
 \usage{
 not_error_check(coef_list_list)
 }
 \arguments{
-\item{coef_list_list}{list of results from running bootstrap_coef_est,
-e.g. lapply(1:N, bootstrap_coef_est)}
+\item{coef_list_list}{List of results from running \code{bootstrap_coef_est},
+e.g. \code{lapply(1:N, bootstrap_coef_est)}}
 }
 \value{
-A logical vector, TRUE if the element is indeed a list of matrices
-with non-missing entries
+A logical vector, \code{TRUE} if the element is indeed
+  a list of matrices with non-missing entries
 }
 \description{
-For each element of the list of results
-from running bootstrap_coef_est, checks if it's
-a list of matrices, and that each matrix has no missing values
+For each element of the list of results from running
+\code{bootstrap_coef_est}, checks if it's a list of matrices,
+and that each matrix has no missing values
 }
 \keyword{internal}

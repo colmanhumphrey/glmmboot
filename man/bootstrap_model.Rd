@@ -3,14 +3,14 @@
 \name{bootstrap_model}
 \alias{bootstrap_model}
 \alias{BootGlmm}
-\title{computes bootstrap resamples of your data,
+\title{Computes bootstrap resamples of your data,
 stores estimates + SEs.}
 \usage{
 bootstrap_model(base_model, base_data, resamples = 9999,
   return_coefs_instead = FALSE, parallelism = c("none", "future",
   "parallel"), resample_specific_blocks = NULL,
   unique_resample_lim = NULL, narrowness_avoid = TRUE,
-  num_cores = NULL, suppress_sampling_message = FALSE)
+  num_cores = NULL, suppress_sampling_message = !interactive())
 
 BootGlmm(base_model, resamples = 9999, base_data = NULL,
   return_coefs_instead = FALSE, resample_specific_blocks = NULL,
@@ -22,85 +22,91 @@ BootGlmm(base_model, resamples = 9999, base_data = NULL,
 \item{base_model}{The pre-bootstrap model, i.e. the model output
 from running a standard model call.
 Examples:
-base_model <- glmmTMB(y ~ age + (1 | subj),
-                      data = rel_data, family = binomial)
-base_model <- lm(y ~ x, data = xy_frame)}
+\code{base_model <- glmmTMB(y ~ age + (1 | subj),
+                      data = rel_data, family = binomial)}
+\code{base_model <- lm(y ~ x, data = xy_frame)}}
 
 \item{base_data}{The data that was used in the call. You
 can leave this to be automatically read, but
 I highly recommend supplying it}
 
 \item{resamples}{How many resamples of your data do you want to do?
-9999 is a reasonable default (see Hesterberg 2015),
+9,999 is a reasonable default (see Hesterberg 2015),
 but start very small to make sure it works on
 your data properly, and to get a rough timing estimate etc.}
 
-\item{return_coefs_instead}{Logical, default FALSE: do you want the list of lists
-of results for each bootstrap sample (set to TRUE), or the
+\item{return_coefs_instead}{Logical, default \code{FALSE}: do you want the
+list of lists of results for each bootstrap sample (set to \code{TRUE}), or the
 matrix output of all samples? See return for more details.}
 
-\item{parallelism}{What type of parallelism (if any) to use to run the resamples.
+\item{parallelism}{Type of parallelism (if any) to use to run the resamples.
 Options are:
-- "none"      the default
-- "future"    to use future.apply (`future`s)
-- "parallel"  to use parallel::mclapply}
+\describe{
+  \item{\code{"none"}}{The default, sequential}
+  \item{\code{"future"}}{To use \code{future.apply} (\code{future}s)}
+  \item{\code{"parallel"}}{To use \code{parallel::mclapply}}
+}}
 
-\item{resample_specific_blocks}{Character vector, default NULL. If left NULL,
-  this algorithm with choose ONE random block to resample over -
-  the one with the largest entropy (often the one with most levels).
-  If you wish to
-  resample over specific random effects as blocks, enter
-  the names here - can be one, or many. Note that resampling
-  multiple blocks is in general quite conservative.
+\item{resample_specific_blocks}{Character vector, default \code{NULL}.
+If left \code{NULL}, this algorithm with choose ONE random block to resample over -
+the one with the largest entropy (often the one with most levels).
+If you wish to resample over specific random effects as blocks, enter
+the names here - can be one, or many. Note that resampling
+multiple blocks is in general quite conservative.
+If you want to perform case resampling but you DO have
+random effects, set \code{resample_specific_blocks} to any
+non-null value that isn't equal to a random effect
+variable name.}
 
-  If you want to perform case resampling but you DO have
-  random effects, set resample_specific_blocks to any
-  non-null value that isn't equal to a random effect
-  variable name.}
-
-\item{unique_resample_lim}{Should be same length as number of random effects (or left NULL).
+\item{unique_resample_lim}{Should be same length as number of random effects
+(or left \code{NULL}).
 Do you want to force the resampling to produce a minimum number of
-unique values in sampling? Don't make this too big...
+unique values in sampling? Don't make this too big.
 Must be named same as rand cols}
 
-\item{narrowness_avoid}{Boolean, default TRUE.
-If TRUE, will resample n-1 instead of n elements
-in the bootstrap (n being either rows, or random effect levels,
-depending on existence of random effects). If FALSE, will do
+\item{narrowness_avoid}{Boolean, default \code{TRUE}. If \code{TRUE}, will resample n-1
+instead of n elements in the bootstrap (n being either rows,
+or random effect levels,
+depending on existence of random effects). If \code{FALSE}, will do
 typical size n resampling.}
 
-\item{num_cores}{Defaults to parallel::detectCores() - 1 if parallelism = "parallel"}
+\item{num_cores}{How many cores to use.
+Defaults to \code{parallel::detectCores() - 1L} if
+\code{parallelism = "parallel"}}
 
-\item{suppress_sampling_message}{Logical, default FALSE. By default, this function
-will message the console with the type of bootstrapping:
-block resampling over random effects - in which case it'll say
-what effect it's sampling over;
-case resampling - in which case it'll say as much.
-Set TRUE to hide message.}
+\item{suppress_sampling_message}{Logical, the default is
+to supress if not in an interactive session.
+Do you want the function to message the console with the type of
+bootstrapping? If block resampling over random effects, then it'll say
+what effect it's sampling over; if case resampling -
+in which case it'll say as much.
+Set \code{TRUE} to hide message.}
 
 \item{suppress_loading_bar}{defunct now}
 
 \item{allow_conv_error}{defunct now}
 }
 \value{
-By default, returns the output from bootstrap_ci:
-    - for each set of covariates (usually just the one set,
-      the conditional model), a matrix of output, a row for each variable,
-      including the intercept
-      (estimate, CIs for boot and base, p-values).
-  If return_coefs_instead = TRUE, then will instead
+By default (with \code{return_coefs_instead} being \code{FALSE}),
+  returns the output from \code{bootstrap_ci};
+  for each set of covariates (usually just the one set,
+  the conditional model) we get a matrix of output: a row for each variable
+  (including the intercept),
+  estimate, CIs for boot and base, p-values.
+  If \code{return_coefs_instead} is \code{TRUE}, then will instead
   return a list of length two:
-  [[1]] will be a list containing the output for the base model
-  [[2]] will be a list of length resamples,
-  each a list of matrices of estimates and standard errors for each model.
+  \itemize{
+    \item a list containing the output for the base model
+    \item a list of length \code{resamples} each a list of matrices of
+      estimates and standard errors for each model.
+  }
   This output is useful for error checking, and if you want
   to run this function in certain distributed ways.
 }
 \description{
 By default, this will compute bootstrap resamples
-and then send them to `bootstrap_ci`
-for calculation. Note - only use parallel methods if your
-model is expensive to build, otherwise the overhead won't be worth it.
+and then send them to \code{bootstrap_ci}
+for calculation.
 }
 \examples{
 x <- rnorm(20)

@@ -8,15 +8,15 @@ gen_vector_match(orig_vector, new_vector,
   current_index = vector("integer", 0))
 }
 \arguments{
-\item{orig_vector}{vector to find indices from}
+\item{orig_vector}{Vector to find indices from.}
 
-\item{new_vector}{vector to match values to (from orig_vector)}
+\item{new_vector}{Vector to match values to (from \code{orig_vector}).}
 
-\item{current_index}{accumulator of the indices so far, for recursion}
+\item{current_index}{Accumulator of the indices so far, for recursion.}
 }
 \value{
-returns a vector of indices from orig_vector that correspond to
-values in new_vector
+Returns a vector of indices from orig_vector that correspond to
+  values in new_vector.
 }
 \description{
 For each value in new_vector, we find the indices of ALL
@@ -24,7 +24,6 @@ matching values in orig_vector. This means that if new_vector
 has duplicates, we'll duplicate the indices from orig_vector too
 }
 \examples{
-
 \donttest{
     orig_vector <- c(1, 1, 2, 3, 3, 3)
     new_vector <- c(1, 2, 1)

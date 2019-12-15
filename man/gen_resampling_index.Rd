@@ -7,16 +7,16 @@
 gen_resampling_index(orig_list, sampled_list)
 }
 \arguments{
-\item{orig_list}{List of original data vectors}
+\item{orig_list}{List of original data vectors.}
 
 \item{sampled_list}{Sampled list}
 }
 \value{
-Returns an index vector
+Returns an index vector.
 }
 \description{
-this function takes in original vectors, and resampled editions,
+This function takes in original vectors, and resampled editions,
 it spits back the matching index of the original variables
-for the new resampled ones
+for the new resampled ones.
 }
 \keyword{internal}

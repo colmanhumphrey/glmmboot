@@ -13,7 +13,7 @@ t-values used for the base interval.}
 
 \item{alpha_level}{level of CI - if you fill in \code{probs}, will use those instead}
 
-\item{probs}{Default NULL, and will use alpha_level to set
+\item{probs}{Default \code{NULL}, and will use \code{alpha_level} to set
 endpoints. Else will calculate these CI endpoints.}
 }
 \value{

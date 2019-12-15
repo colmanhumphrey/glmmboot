@@ -7,10 +7,9 @@
 find_bars(form_with_bars)
 }
 \arguments{
-\item{form_with_bars}{A formula used in e.g. lme4 and similar
+\item{form_with_bars}{A formula used in e.g. \code{lme4} and similar
 packages. Typically along the lines:
-y ~ age + (1 | school)
-etc}
+\code{y ~ age + (1 | school)} etc}
 }
 \description{
 Returns the terms with bars from a formula

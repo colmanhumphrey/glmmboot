@@ -379,28 +379,17 @@ BootGlmm <- function(base_model, # nocov start
                     suppress_sampling_message = suppress_sampling_message)
 } # nocov end
 
-#' Runs the bootstrapping of the models
+
+#' Runs the bootstrapping of the models.
 #'
 #' This function gets passed a function that runs a single bootstrap resample
 #' and a number of resamples, and decides how to run them
-#' e.g. in parallel etc
-#'
-#' @param bootstrap_function
-#'   a function that we wish to run `resamples` times
-#'
-#' @param resamples
-#'   how many times we wish to run `bootstrap_function`
-#'
-#' @param parallelism
-#'   How to run this function in parallel
-#'
-#' @param num_cores
-#'   How many cores to use, if using `parallel`
-#'
-#' @return
-#'   returns the list that contains the results of running
-#'   `bootstrap_function`.
-#'
+#' e.g. in parallel etc.
+#' @param bootstrap_function Function that we wish to run
+#'   \code{resamples} times.
+#' @inheritParams bootstrap_model
+#' @return Returns the list that contains the results of running
+#'   \code{bootstrap_function}.
 #' @keywords internal
 bootstrap_runner <- function(bootstrap_function,
                              resamples,

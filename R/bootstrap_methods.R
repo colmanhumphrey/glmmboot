@@ -195,7 +195,7 @@ get_rand <- function(form_with_bars){
     first_pass <- unlist(
         lapply(findbar_list,
                function(x){
-                   if (class(x) == "call") {
+                   if (inherits(x "call")) {
                        return(as.character(x[3])) # nocov
                    } else {
                        first_bar <- unlist(gregexpr("|", x, fixed = TRUE))[[1]]

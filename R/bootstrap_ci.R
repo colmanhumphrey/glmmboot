@@ -200,23 +200,12 @@ bootstrap_individual_ci <- function(base_matrix = NULL,
     ret_matrix
 }
 
-#' gets the confidence interval and p-value for a single variable
-#'
-#' @param base_est
-#'   base model estimate
-#'
-#' @param base_se
-#'   base model SE
-#'
-#' @param resampled_ests
-#'   Vector of estimates from resampling
-#'
-#' @param resampled_ses
-#'   Vector of standard errors from resampling
-#'
-#' @return
-#'   Returns a length 3 vector: left and right CI value, and p-value
-#'
+#' Gets the confidence interval and p-value for a single variable.
+#' @param base_est Base model estimate.
+#' @param base_se Base model SE.
+#' @param resampled_ests Vector of estimates from resampling.
+#' @param resampled_ses Vector of standard errors from resampling.
+#' @return Returns a length 3 vector: left and right CI value, and p-value.
 #' @keywords internal
 ci_variable <- function(base_est,
                         base_se,
@@ -267,34 +256,21 @@ BootCI <- function(base_coef_se = NULL, # nocov start
                  probs = probs)
 } # nocov end
 
+
 #' Combines output from multiple bootstrap_model calls
 #'
 #' If you run glmmboot on e.g. a grid of computers,
-#' set return_coefs_instead = TRUE for each.
+#' set \code{return_coefs_instead = TRUE} for each.
 #' Then enter them all here. Either just list them out,
 #' or put them into one list and enter them.
-#'
-#' @param ...
-#'   Say our output from bootstrap_model from three separate computers is
-#'   output_list1,
-#'   output_list2,
-#'   output_list3
-#'   We can run: combine_resampled_lists(output_list1,
-#'                                       output_list2,
-#'                                       output_list3)
-#'   OR: create a list of lists:
-#'   output_list_list <- list(output_list1, output_list2, output_list3)
-#'   and then: combine_resampled_lists(output_list_list)
-#'
-#' @param return_combined_list
-#'   Logical, default FALSE. TRUE if you want the combined
-#'   list of lists, FALSE for just the output from bootstrap_ci applied to it.
-#'
-#' @return
-#'   Returns the same output as bootstrap_ci by default,
+#' @param ... List of outputs to be combined, or just a bunch of output entries
+#'   as separate unnamed arguments.
+#' @param return_combined_list Logical, default \code{FALSE}.
+#'   \code{TRUE} if you want the combined list of lists,
+#'   \code{FALSE} for just the output from bootstrap_ci applied to it.
+#' @return Returns the same output as \code{bootstrap_ci} by default,
 #'   or the combined list (as if you had just run bootstrap_model once with
-#'   all resamples) if return_combined_list = TRUE
-#'
+#'   all resamples) if \code{return_combined_list = TRUE}
 #' @examples
 #' \donttest{
 #'   data(test_data)

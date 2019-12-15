@@ -1,31 +1,33 @@
 context("test-bootstrap_model")
 
+
 test_that("bootstrap_model returns matrix when asked, lists when asked", {
     x <- rnorm(10)
     y <- rnorm(10)
     xy_data <- data.frame(x = x, y = y)
     simple_model <- lm(y ~ x, data = xy_data)
 
-    expect_equal(
-        class(bootstrap_model(base_model = simple_model,
-                              base_data = xy_data,
-                              resamples = 20)),
-        "matrix")
-    expect_equal(
-        class(bootstrap_model(base_model = simple_model,
-                              base_data = xy_data,
-                              resamples = 20,
-                              return_coefs_instead = TRUE)),
-        "list")
+    expect_true(
+        inherits(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20),
+                 "matrix"))
+    expect_true(
+        inherits(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 return_coefs_instead = TRUE),
+                 "list"))
 
-    expect_equal(
-        class(bootstrap_model(base_model = simple_model,
-                              base_data = xy_data,
-                              resamples = 20,
-                              narrowness_avoid = FALSE,
-                              return_coefs_instead = TRUE)),
-        "list")
+    expect_true(
+        inherits(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 narrowness_avoid = FALSE,
+                                 return_coefs_instead = TRUE),
+                 "list"))
 })
+
 
 test_that("bootstrap_model works on test_data", {
     if (!requireNamespace("glmmTMB", quietly = TRUE)) {
@@ -34,11 +36,10 @@ test_that("bootstrap_model works on test_data", {
 
     data(test_data)
 
-    library(glmmTMB)
     model_formula <- as.formula(y ~ x_var1 + x_var2 + x_var2 + (1 | subj))
-    base_run <- suppressWarnings(glmmTMB(formula = model_formula,
-                                         data = test_data,
-                                         family = binomial))
+    base_run <- suppressWarnings(glmmTMB::glmmTMB(formula = model_formula,
+                                                  data = test_data,
+                                                  family = binomial))
 
     test_run <- bootstrap_model(base_model = base_run,
                                 base_data = test_data,
@@ -55,7 +56,7 @@ test_that("bootstrap_model works on test_data", {
 
     targ_model_formula <- as.formula(y ~ x_var1 + x_var2 + x_var2 +
                                     (1 | subj) + (1 | targ))
-    base_run <- suppressWarnings(glmmTMB(formula = targ_model_formula,
+    base_run <- suppressWarnings(glmmTMB::glmmTMB(formula = targ_model_formula,
                                          data = targ_data,
                                          family = binomial))
     expect_error(bootstrap_model(base_model = base_run,
@@ -81,13 +82,14 @@ test_that("bootstrap_model works on test_data", {
     ## hitting some errors, thus redoing etc
 
     small_data <- test_data[1:6, ]
-    small_base_run <- suppressWarnings(glmmTMB(formula = model_formula,
+    small_base_run <- suppressWarnings(glmmTMB::glmmTMB(formula = model_formula,
                                                data = test_data,
                                                family = binomial))
     expect_warning(bootstrap_model(base_model = small_base_run,
                                    base_data = small_data,
                                    resamples = 20))
 })
+
 
 test_that("bootstrap_model fails when there is no data", {
     x <- rnorm(10)
@@ -108,25 +110,25 @@ test_that("bootstrap_model fails when there is no data", {
     )
 })
 
+
 test_that("bootstrap_model works on zero-inflated models", {
     if (!requireNamespace("glmmTMB", quietly = TRUE)) {
         skip("need glmmTMB to be installed for zero-inflated")
     }
 
-    library(glmmTMB)
-
     ## just copying the model from the glmmTMB vignettes etc
+    data(Owls, package = "glmmTMB")
     owls <- transform(Owls,
                       nest = reorder(Nest, NegPerChick),
                       ncalls = SiblingNegotiation,
                       ft = FoodTreatment)
 
-    fit_zipoisson <- glmmTMB(
-        ncalls ~ (ft + ArrivalTime) * SexParent +
-            offset(log(BroodSize)) + (1 | nest),
-        data = owls,
-        ziformula = ~1,
-        family = poisson)
+    fit_zipoisson <- glmmTMB::glmmTMB(
+                                  ncalls ~ (ft + ArrivalTime) * SexParent +
+                                      offset(log(BroodSize)) + (1 | nest),
+                                  data = owls,
+                                  ziformula = ~1,
+                                  family = poisson)
 
     zero_boot <- bootstrap_model(base_model = fit_zipoisson,
                                  base_data = owls,
@@ -134,9 +136,9 @@ test_that("bootstrap_model works on zero-inflated models", {
     expect_type(zero_boot, "list")
     expect_equal(names(zero_boot), c("cond", "zi"))
 
-    expect_equal(unname(unlist(lapply(zero_boot, class))),
-                 c("matrix", "matrix"))
+    expect_true(all(unlist(lapply(zero_boot, is.matrix))))
 })
+
 
 test_that("bootstrap_model parallelism modes", {
     x <- rnorm(20)

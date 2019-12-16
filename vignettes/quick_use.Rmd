@@ -16,15 +16,18 @@ knitr::opts_chunk$set(
 )
 knitr::opts_chunk$set(cache=TRUE)
 knitr::opts_knit$set(cache.extra = 234) # seed
+options(warnPartialMatchArgs = FALSE,
+        warnPartialMatchDollar = FALSE,
+        warnPartialMatchAttr = FALSE)
 ```
 # glmmboot: Quick Use
 
 For even quicker usage instructions, see the README.
 
-The general idea of this package is that you can throw nearly any 
-model built in the typical R fashion. For now, we just need 
+The general idea of this package is that you can throw nearly any
+model built in the typical R fashion. For now, we just need
 a somewhat standard way of extracting fixed effects, and that
-`update` works, which is nearly always the case. 
+`update` works, which is nearly always the case.
 
 Assuming your model is called `base_model`, if
 `coef(summary(base_model))` gives the estimates and standard errors,
@@ -85,8 +88,8 @@ print(bootstrap_over_subj)
 ## Combining Runs
 
 The above might take a long time in a real setting. If it takes far too long on your machine,
-you can ideally run it on a bunch of computers. We don't want each computer to 
-output the fully processed output, only the intermediate outcome. To do this, 
+you can ideally run it on a bunch of computers. We don't want each computer to
+output the fully processed output, only the intermediate outcome. To do this,
 we set `return_coefs_instead = TRUE` for each run:
 ```{r, cache=TRUE}
 b_list1 <- bootstrap_model(base_model = base_run,
@@ -102,7 +105,7 @@ b_list3 <- bootstrap_model(base_model = base_run,
                            resamples = 30,
                            return_coefs_instead = TRUE)
 ```
-Combining this is simple enough. If we've used a few, we don't want to mess around with 
+Combining this is simple enough. If we've used a few, we don't want to mess around with
 even more lists, so we can enter them into the relevant function:
 ```{r, cache=TRUE}
 print(combine_resampled_lists(b_list1, b_list2, b_list3))
@@ -169,8 +172,17 @@ This becomes the default if you don't set `parallelism` but just `num_cores`.
 This uses the very nice `future.apply::future_lapply` function to
 run the models in parallel. Note that you MUST set the `future::plan`
 (see the docs for the `future` and `future.apply` packages) to actually
-make use of multiple cores etc. Using `num_cores` is NOT the right
+make use of multiple cores etc, or else you'll just get a sequential run.
+Using `num_cores` is NOT the right
 way to set the backend, and will cause an error.
+
+Futher, in many cases
+you should supply any packages required for the model to run with the
+argument `future_packages`, because the S3 generic `update()` is used
+to update the model, which won't ship the required globals. You
+don't need this if using `plan(multicore)`, since all futures will
+have access to the same shared memory (and you also don't need it if
+your model is a base model, e.g. `glm`).
 
 This should work well with Windows.
 
@@ -182,7 +194,8 @@ plan("multiprocess") # "multiprocess" should work across Windows / Mac / Linux
 model_results <- bootstrap_model(base_model = some_base_run,
                                  base_data = some_interesting_data,
                                  resamples = 9999,
-                                 parallelism = "future")
+                                 parallelism = "future",
+                                 future_packages = "glmmTMB")
 ```
 
 ### Only setting `num_cores`
@@ -230,7 +243,7 @@ start_time <- Sys.time()
 for (j in 1:total_iterations) {
     ## simulate expensive operation...
     Sys.sleep(2)
-    
+
     print(log_remaining(start_time, Sys.time(), j, total_iterations, "secs"))
 }
 ```
@@ -257,7 +270,7 @@ for (j in 1:num_blocks) {
 
 combined_results <- combine_resampled_lists(results_list)
 ```
-Of course with 50 blocks of size 100, we'd get the equivalent of 5000 samples. 
+Of course with 50 blocks of size 100, we'd get the equivalent of 5000 samples.
 
 ## Zero Inflated
 
@@ -304,13 +317,13 @@ Note the various macros within the `vignette` section of the metadata block abov
 
 The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
 
-    output: 
+    output:
       rmarkdown::html_vignette:
         css: mystyles.css
 
 ## Figures
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
+The figure sizes have been customised so that you can easily put two images side-by-side.
 
 ```{r, fig.show='hold'}
 plot(1:10)

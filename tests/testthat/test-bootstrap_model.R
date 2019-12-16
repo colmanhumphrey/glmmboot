@@ -214,16 +214,23 @@ test_that("bootstrap_model parallelism modes", {
                                  suppress_sampling_message = TRUE),
                  NA)
     ## will set num_cores = parallel::detectCores() - 1L
-    expect_error(bootstrap_model(base_model = simple_model,
+    expect_message(bootstrap_model(base_model = simple_model,
                                  base_data = xy_data,
                                  resamples = 20,
                                  parallelism = "parallel",
-                                 suppress_sampling_message = TRUE),
-                 NA)
-    expect_error(bootstrap_model(base_model = simple_model,
-                                 base_data = xy_data,
-                                 resamples = 20,
-                                 parallelism = "parallel",
-                                 suppress_sampling_message = FALSE),
-                 NA)
+                                 suppress_sampling_message = TRUE))
+    expect_error(suppressMessages(bootstrap_model(
+        base_model = simple_model,
+        base_data = xy_data,
+        resamples = 20,
+        parallelism = "parallel",
+        suppress_sampling_message = TRUE)),
+        NA)
+    expect_error(suppressMessages(bootstrap_model(
+        base_model = simple_model,
+        base_data = xy_data,
+        resamples = 20,
+        parallelism = "parallel",
+        suppress_sampling_message = FALSE),
+        NA))
 })

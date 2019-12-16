@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-glmmboot provides a simple interface for creating bootstrap 
+glmmboot provides a simple interface for creating bootstrap
 confidence intervals using a wide set of models. The primary function
 is `bootstrap_model`, which has three primary arguments:
 
@@ -31,14 +31,14 @@ is `bootstrap_model`, which has three primary arguments:
 * `resamples`: how many bootstrap resamples you wish to perform
 
 Another function, `bootstrap_ci`, converts output from
-bootstrap model runs into confidence intervals and p-values. 
+bootstrap model runs into confidence intervals and p-values.
 By default, `bootstrap_model` calls `bootstrap_ci`.
 
 ## Types of bootstrapping
 
 For models with random effects:
 
-* the default (and recommended) behaviour will be to block sample over the effect with the largest entropy 
+* the default (and recommended) behaviour will be to block sample over the effect with the largest entropy
 (generally the one with the most levels)
 * it's also possible to specify multiple random effects to block sample over
 
@@ -46,7 +46,7 @@ With no random effects, performs case resampling: resamples each row with replac
 
 ## Requirements:
 
-1. the model should work with the 
+1. the model should work with the
 function `update`, to change the data
 2. the coefficients are extractable using `coef(summary(model))`
   + either directly, i.e. this gives a matrix
@@ -56,12 +56,14 @@ produce two matrices of coefficients
 ## Parallel
 
 It may be desired to run this package in parallel. The best way is
-to use the `future` backend, which uses `future.apply::future_lapply`. 
+to use the `future` backend, which uses `future.apply::future_lapply`.
 You do that by specifying the backend through the
-`future::plan` setup, and then setting `parallelism = "future"`. See the Quick Use 
+`future::plan` setup, and then setting `parallelism = "future"`. It's quite
+possible you'll want to pass the package used to build the model to the argument
+`future_packages`. See the Quick Use
 vignette for more.
 
-It's also easy to use `parallel::mclapply`; again, see the Quick Use 
+It's also easy to use `parallel::mclapply`; again, see the Quick Use
 vignette.
 
 ## Installation
@@ -98,8 +100,8 @@ sample_frame <- data.frame(x1 = x1, x2 = x2, y = y)
 Typically this model is fit with logistic regression:
 
 ```{r}
-base_run <- glm(y ~ x1 + x2, 
-                family = binomial(link = 'logit'), 
+base_run <- glm(y ~ x1 + x2,
+                family = binomial(link = 'logit'),
                 data = sample_frame)
 summary(base_run)
 ```
@@ -109,7 +111,7 @@ Let's run a bootstrap.
 ```{r}
 library(glmmboot)
 set.seed(15278086) # Happy for Nadia and Alan
-boot_results <- bootstrap_model(base_model = base_run, 
+boot_results <- bootstrap_model(base_model = base_run,
                                 base_data = sample_frame,
                                 resamples = 999)
 ```
@@ -119,7 +121,7 @@ And the results:
 print(boot_results)
 ```
 
-The estimates are the same, since we just pull from the base model. The intervals are 
+The estimates are the same, since we just pull from the base model. The intervals are
 similar to the base model, although slightly narrower: typical logistic regression is fractionally
 conservative at `N = 50`.
 
@@ -146,8 +148,8 @@ Let's run the bootstrap (ignore the actual results, 3 resamples is basically mea
 ```{r}
 zi_results <- bootstrap_model(base_model = fit_zipoisson,
                               base_data = owls,
-                              resamples = 3,
-                              parallelism = "future")
+                              resamples = 3)
+
 print(zi_results)
 ```
 
@@ -159,5 +161,6 @@ plan("multiprocess")
 zi_results <- bootstrap_model(base_model = fit_zipoisson,
                               base_data = owls,
                               resamples = 1000,
-                              parallelism = "future")
+                              parallelism = "future",
+                              future_packages = "glmmTMB")
 ```

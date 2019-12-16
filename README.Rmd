@@ -10,6 +10,9 @@ knitr::opts_chunk$set(
   comment = "#",
   fig.path = "README-"
 )
+options(warnPartialMatchArgs = FALSE,
+        warnPartialMatchDollar = FALSE,
+        warnPartialMatchAttr = FALSE)
 ```
 
 # glmmboot
@@ -85,6 +88,7 @@ devtools::install_github("ColmanHumphrey/glmmboot")
 We'll provide a quick example using glm. First we'll set up some data:
 
 ```{r}
+set.seed(15278086) # Happy for Nadia and Alan
 x1 <- rnorm(50)
 x2 <- runif(50)
 
@@ -110,7 +114,6 @@ Let's run a bootstrap.
 
 ```{r}
 library(glmmboot)
-set.seed(15278086) # Happy for Nadia and Alan
 boot_results <- bootstrap_model(base_model = base_run,
                                 base_data = sample_frame,
                                 resamples = 999)

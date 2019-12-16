@@ -181,6 +181,11 @@ bootstrap_model <- function(base_model,
         }
     }
 
+    if (parallelism != "future" && !is.null(future_packages)) {
+        stop("Argument `future_packages` should only be set when ",
+             "using `parallelism = \"future\"`", call. = FALSE)
+    }
+
     ##------------------------------------
 
     ## formula processing

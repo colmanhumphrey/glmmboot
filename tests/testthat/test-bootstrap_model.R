@@ -188,6 +188,22 @@ test_that("bootstrap_model parallelism modes", {
                                  num_cores = NULL,
                                  suppress_sampling_message = TRUE),
                  NA)
+    ## we're not actually using glmmTMB here but for testing it's fine
+    expect_error(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 parallelism = "parallel",
+                                 num_cores = NULL,
+                                 future_packages = "glmmTMB",
+                                 suppress_sampling_message = TRUE))
+    expect_error(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 parallelism = "future",
+                                 num_cores = NULL,
+                                 future_packages = "glmmTMB",
+                                 suppress_sampling_message = TRUE),
+                 NA)
 
     skip_on_os("windows")
     expect_error(bootstrap_model(base_model = simple_model,

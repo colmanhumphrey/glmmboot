@@ -41,6 +41,11 @@ test_that("bootstrap_model works on test_data", {
                                                   data = test_data,
                                                   family = binomial))
 
+    expect_error(bootstrap_model(base_model = base_run,
+                                 base_data = test_data,
+                                 resamples = 2,
+                                 suppress_sampling_message = FALSE),
+                 NA)
     test_run <- bootstrap_model(base_model = base_run,
                                 base_data = test_data,
                                 resamples = 20)
@@ -191,5 +196,18 @@ test_that("bootstrap_model parallelism modes", {
                                  parallelism = "parallel",
                                  num_cores = 2,
                                  suppress_sampling_message = TRUE),
+                 NA)
+    ## will set num_cores = parallel::detectCores() - 1L
+    expect_error(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 parallelism = "parallel",
+                                 suppress_sampling_message = TRUE),
+                 NA)
+    expect_error(bootstrap_model(base_model = simple_model,
+                                 base_data = xy_data,
+                                 resamples = 20,
+                                 parallelism = "parallel",
+                                 suppress_sampling_message = FALSE),
                  NA)
 })

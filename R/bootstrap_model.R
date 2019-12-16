@@ -52,6 +52,11 @@
 #' @param num_cores How many cores to use.
 #'   Defaults to \code{parallel::detectCores() - 1L} if
 #'   \code{parallelism = "parallel"}
+#' @param future_packages Packages to pass to created futures when
+#'   using \code{parallelism = "future"}. This must be supplied if
+#'   the package used to model the data isn't in base and you're
+#'   using a plan that doesn't have shared memory, because the
+#'   model is updated with the S3 generic \code{update}.
 #' @param suppress_sampling_message Logical, the default is
 #'   to supress if not in an interactive session.
 #'   Do you want the function to message the console with the type of
@@ -110,6 +115,7 @@ bootstrap_model <- function(base_model,
                             unique_resample_lim = NULL,
                             narrowness_avoid = TRUE,
                             num_cores = NULL,
+                            future_packages = NULL,
                             suppress_sampling_message = !interactive()){
     if (missing(base_data) || is.null(base_data)) {
         if ("model" %in% names(base_model)) {
@@ -296,9 +302,10 @@ bootstrap_model <- function(base_model,
     ##------------------------------------
 
     coef_se_list <- bootstrap_runner(bootstrap_coef_est,
-                                     resamples,
-                                     parallelism,
-                                     num_cores)
+                                     resamples = resamples,
+                                     parallelism = parallelism,
+                                     num_cores = num_cores,
+                                     future_packages = future_packages)
 
     ##------------------------------------
 
@@ -394,7 +401,8 @@ BootGlmm <- function(base_model, # nocov start
 bootstrap_runner <- function(bootstrap_function,
                              resamples,
                              parallelism = c("none", "future", "parallel"),
-                             num_cores = NULL){
+                             num_cores = NULL,
+                             future_packages = NULL){
     parallelism <- match.arg(parallelism)
 
     if (parallelism == "future") {
@@ -403,7 +411,8 @@ bootstrap_runner <- function(bootstrap_function,
                                  1:resamples,
                                  function(i){
                                      bootstrap_function()
-                                 }))
+                                 },
+                                 future.packages = future_packages))
     }
 
     if (parallelism == "parallel") {

@@ -10,7 +10,8 @@ bootstrap_model(base_model, base_data, resamples = 9999,
   return_coefs_instead = FALSE, parallelism = c("none", "future",
   "parallel"), resample_specific_blocks = NULL,
   unique_resample_lim = NULL, narrowness_avoid = TRUE,
-  num_cores = NULL, suppress_sampling_message = !interactive())
+  num_cores = NULL, future_packages = NULL,
+  suppress_sampling_message = !interactive())
 
 BootGlmm(base_model, resamples = 9999, base_data = NULL,
   return_coefs_instead = FALSE, resample_specific_blocks = NULL,
@@ -73,6 +74,12 @@ typical size n resampling.}
 \item{num_cores}{How many cores to use.
 Defaults to \code{parallel::detectCores() - 1L} if
 \code{parallelism = "parallel"}}
+
+\item{future_packages}{Packages to pass to created futures when
+using \code{parallelism = "future"}. This must be supplied if
+the package used to model the data isn't in base and you're
+using a plan that doesn't have shared memory, because the
+model is updated with the S3 generic \code{update}.}
 
 \item{suppress_sampling_message}{Logical, the default is
 to supress if not in an interactive session.

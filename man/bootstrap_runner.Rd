@@ -2,27 +2,45 @@
 % Please edit documentation in R/bootstrap_model.R
 \name{bootstrap_runner}
 \alias{bootstrap_runner}
-\title{Runs the bootstrapping of the models}
+\title{Runs the bootstrapping of the models.}
 \usage{
 bootstrap_runner(bootstrap_function, resamples, parallelism = c("none",
-  "future", "parallel"), num_cores = NULL)
+  "future", "parallel"), num_cores = NULL, future_packages = NULL)
 }
 \arguments{
-\item{bootstrap_function}{a function that we wish to run `resamples` times}
+\item{bootstrap_function}{Function that we wish to run
+\code{resamples} times.}
 
-\item{resamples}{how many times we wish to run `bootstrap_function`}
+\item{resamples}{How many resamples of your data do you want to do?
+9,999 is a reasonable default (see Hesterberg 2015),
+but start very small to make sure it works on
+your data properly, and to get a rough timing estimate etc.}
 
-\item{parallelism}{How to run this function in parallel}
+\item{parallelism}{Type of parallelism (if any) to use to run the resamples.
+Options are:
+\describe{
+  \item{\code{"none"}}{The default, sequential}
+  \item{\code{"future"}}{To use \code{future.apply} (\code{future}s)}
+  \item{\code{"parallel"}}{To use \code{parallel::mclapply}}
+}}
 
-\item{num_cores}{How many cores to use, if using `parallel`}
+\item{num_cores}{How many cores to use.
+Defaults to \code{parallel::detectCores() - 1L} if
+\code{parallelism = "parallel"}}
+
+\item{future_packages}{Packages to pass to created futures when
+using \code{parallelism = "future"}. This must be supplied if
+the package used to model the data isn't in base and you're
+using a plan that doesn't have shared memory, because the
+model is updated with the S3 generic \code{update}.}
 }
 \value{
-returns the list that contains the results of running
-  `bootstrap_function`.
+Returns the list that contains the results of running
+  \code{bootstrap_function}.
 }
 \description{
 This function gets passed a function that runs a single bootstrap resample
 and a number of resamples, and decides how to run them
-e.g. in parallel etc
+e.g. in parallel etc.
 }
 \keyword{internal}

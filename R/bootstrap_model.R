@@ -20,8 +20,8 @@
 #'   but start very small to make sure it works on
 #'   your data properly, and to get a rough timing estimate etc.
 #' @param return_coefs_instead Logical, default \code{FALSE}: do you want the
-#'   list of lists of results for each bootstrap sample (set to \code{TRUE}), or the
-#'   matrix output of all samples? See return for more details.
+#'   list of lists of results for each bootstrap sample (set to \code{TRUE}),
+#'   or the matrix output of all samples? See return for more details.
 #' @param parallelism Type of parallelism (if any) to use to run the resamples.
 #'   Options are:
 #'   \describe{
@@ -58,7 +58,7 @@
 #'   using a plan that doesn't have shared memory, because the
 #'   model is updated with the S3 generic \code{update}.
 #' @param suppress_sampling_message Logical, the default is
-#'   to supress if not in an interactive session.
+#'   to suppress if not in an interactive session.
 #'   Do you want the function to message the console with the type of
 #'   bootstrapping? If block resampling over random effects, then it'll say
 #'   what effect it's sampling over; if case resampling -

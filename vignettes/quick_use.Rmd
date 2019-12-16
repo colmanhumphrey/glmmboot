@@ -176,7 +176,7 @@ make use of multiple cores etc, or else you'll just get a sequential run.
 Using `num_cores` is NOT the right
 way to set the backend, and will cause an error.
 
-Futher, in many cases
+Further, in many cases
 you should supply any packages required for the model to run with the
 argument `future_packages`, because the S3 generic `update()` is used
 to update the model, which won't ship the required globals. You

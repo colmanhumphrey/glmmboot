@@ -2,23 +2,21 @@
 % Please edit documentation in R/bootstrap_methods.R
 \name{get_rand}
 \alias{get_rand}
-\title{this takes in a formula with bars
+\title{Takes in a formula with bars
 and gives back the plain names of the columns}
 \usage{
 get_rand(form_with_bars)
 }
 \arguments{
-\item{form_with_bars}{A formula used in e.g. lme4 and similar
+\item{form_with_bars}{A formula used in e.g. \code{lme4} and similar
 packages. Typically along the lines:
-y ~ age + (1 | school)
-etc}
+\code{y ~ age + (1 | school)} etc}
 }
 \value{
-A vector of the variables that
-are treated as random
+A vector of the variables that are treated as random.
 }
 \description{
-this takes in a formula with bars
+Takes in a formula with bars
 and gives back the plain names of the columns
 }
 \examples{

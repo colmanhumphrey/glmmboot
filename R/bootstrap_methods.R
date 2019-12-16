@@ -2,27 +2,17 @@
 #'
 #' Takes in a list of unique levels in the random columns,
 #' gives back a random sampling of each.
-#'
-#' @param list_of_levels
-#'   list of vectors of levels of each random effect
-#'
-#' @param rand_columns
-#'   Default NULL.
-#'   name of columns to randomise over; if NULL, will use
-#'   all in 'list_of_levels'
-#'
-#' @param unique_resample_lim
-#'   Default NULL; optionally set a minimal number of unique levels each sample
+#' @param list_of_levels List of vectors of levels of each random effect.
+#' @param rand_columns Default \code{NULL}. Name of columns to randomise over;
+#'   if \code{NULL}, will use all in \code{list_of_levels}
+#' @param unique_resample_lim Default \code{NULL};
+#'   optionally set a minimal number of unique levels each sample
 #'   must produce. Note that it should be a named vector,
 #'   the same as the levels to randomise over.
-#'
-#' @param reduce_by_one
-#'   Logical, default TRUE; for (potentially) more accurate coverage,
-#'   resample one less than the number of levels in each list
-#'
-#' @return
-#'   A list of samples
-#'
+#' @param reduce_by_one Logical, default \code{TRUE};
+#'   for greater coverage,
+#'   resample one less than the number of levels in each list.
+#' @return A list of samples
 #' @keywords internal
 gen_sample <- function(list_of_levels,
                        rand_columns = NULL,
@@ -43,20 +33,14 @@ gen_sample <- function(list_of_levels,
     temp
 }
 
+
 #' For resampling from a single set of levels
 #'
-#' @param levels
-#'   The levels to sample
-#'
-#' @param unique_lim
-#'   Default NULL; optionally a required number of unique
-#'   elements to have in the sample
-#'
+#' @param levels The levels to sample.
+#' @param unique_lim Default \code{NULL};
+#'   optionally a required number of unique elements to have in the sample
 #' @inheritParams gen_sample
-#'
-#' @return
-#' A sample of 'levels'; a vector.
-#'
+#' @return A sample of \code{levels}; a vector.
 #' @keywords internal
 gen_samp_lev <- function(levels,
                          unique_lim = NULL,
@@ -90,21 +74,17 @@ gen_samp_lev <- function(levels,
 }
 
 
-
 #' Finds all occurrences of new_vector in orig_vector
 #'
 #' For each value in new_vector, we find the indices of ALL
 #' matching values in orig_vector. This means that if new_vector
 #' has duplicates, we'll duplicate the indices from orig_vector too
-#'
-#' @param orig_vector vector to find indices from
-#' @param new_vector vector to match values to (from orig_vector)
-#' @param current_index accumulator of the indices so far, for recursion
-#' @return returns a vector of indices from orig_vector that correspond to
-#' values in new_vector
-#'
+#' @param orig_vector Vector to find indices from.
+#' @param new_vector Vector to match values to (from \code{orig_vector}).
+#' @param current_index Accumulator of the indices so far, for recursion.
+#' @return Returns a vector of indices from orig_vector that correspond to
+#'   values in new_vector.
 #' @examples
-#'
 #' \donttest{
 #'     orig_vector <- c(1, 1, 2, 3, 3, 3)
 #'     new_vector <- c(1, 2, 1)
@@ -131,19 +111,12 @@ gen_vector_match <- function(orig_vector,
 
 #' Given resampled vectors, gives matching index of original variables
 #'
-#' this function takes in original vectors, and resampled editions,
+#' This function takes in original vectors, and resampled editions,
 #' it spits back the matching index of the original variables
-#' for the new resampled ones
-#'
-#' @param orig_list
-#' List of original data vectors
-#'
-#' @param sampled_list
-#' Sampled list
-#'
-#' @return
-#' Returns an index vector
-#'
+#' for the new resampled ones.
+#' @param orig_list List of original data vectors.
+#' @param sampled_list Sampled list
+#' @return Returns an index vector.
 #' @keywords internal
 gen_resampling_index <- function(orig_list,
                                  sampled_list){
@@ -169,18 +142,12 @@ gen_resampling_index <- function(orig_list,
 }
 
 
-#' this takes in a formula with bars
+#' Takes in a formula with bars
 #' and gives back the plain names of the columns
-#'
-#' @param form_with_bars
-#' A formula used in e.g. lme4 and similar
-#' packages. Typically along the lines:
-#' y ~ age + (1 | school)
-#' etc
-#'
-#' @return A vector of the variables that
-#' are treated as random
-#'
+#' @param form_with_bars A formula used in e.g. \code{lme4} and similar
+#'   packages. Typically along the lines:
+#'   \code{y ~ age + (1 | school)} etc
+#' @return A vector of the variables that are treated as random.
 #' @examples
 #' get_rand("y ~ age + (1 | school)")
 #' get_rand("y ~ income + (1 | school) + (1 | school:section)")
@@ -195,7 +162,7 @@ get_rand <- function(form_with_bars){
     first_pass <- unlist(
         lapply(findbar_list,
                function(x){
-                   if (class(x) == "call") {
+                   if (inherits(x, "call")) {
                        return(as.character(x[3])) # nocov
                    } else {
                        first_bar <- unlist(gregexpr("|", x, fixed = TRUE))[[1]]
@@ -214,14 +181,14 @@ get_rand <- function(form_with_bars){
     all_vars[in_firstpass]
 }
 
+
 #' Returns the terms with bars from a formula
 #'
 #' @inheritParams get_rand
-#'
 #' @keywords internal
 find_bars <- function(form_with_bars){
     ## if it's just text right now, convert it
-    if (!("formula" %in% class(form_with_bars))) {
+    if (!inherits(form_with_bars, "formula")) {
         form_with_bars <- as.formula(form_with_bars)
     }
 
@@ -231,6 +198,7 @@ find_bars <- function(form_with_bars){
     ## return the terms with a bar
     as.list(form_terms[grepl("|", form_terms, fixed = TRUE)])
 }
+
 
 #' Calculate Shannon Entropy
 #' @keywords internal
@@ -244,21 +212,15 @@ calc_entropy <- function(level_vector){
 #'
 #' Checks that an object is a list, and also
 #' that the list is a collection of matrices.
-#' Currently returns FALSE on an empty list
-#'
-#' @param list_to_check
-#' The "list" (maybe!) to check
-#'
-#' @param allow_null
-#' If an element is NULL, is that OK?
-#'
-#' @return
-#' TRUE or FALSE
-#'
+#' Currently returns \code{FALSE} on an empty list
+#' @param list_to_check The potential list to check
+#' @param allow_null If an element is \code{NULL}, is that OK?
+#'   Default \code{TRUE}
+#' @return Logical
 #' @keywords internal
 list_of_matrices <- function(list_to_check,
                              allow_null = TRUE){
-    if (!("list" %in% class(list_to_check))) {
+    if (!inherits(list_to_check, "list")) {
         return(FALSE)
     }
 
@@ -267,7 +229,7 @@ list_of_matrices <- function(list_to_check,
     }
 
     all(unlist(lapply(list_to_check, function(maybe_mat){
-        if ("matrix" %in% class(maybe_mat)) {
+        if (is.matrix(maybe_mat)) {
             return(TRUE)
         }
         if (allow_null && is.null(maybe_mat)) {
@@ -277,26 +239,21 @@ list_of_matrices <- function(list_to_check,
     })))
 }
 
-#' Checks if the result of bootstrap_coef_est is not error
+
+#' Checks if the result of \code{bootstrap_coef_est} is not error
 #'
-#' For each element of the list of results
-#' from running bootstrap_coef_est, checks if it's
-#' a list of matrices, and that each matrix has no missing values
-#'
-#' @param coef_list_list
-#' list of results from running bootstrap_coef_est,
-#' e.g. lapply(1:N, bootstrap_coef_est)
-#'
-#' @return
-#' A logical vector, TRUE if the element is indeed a list of matrices
-#' with non-missing entries
-#'
+#' For each element of the list of results from running
+#' \code{bootstrap_coef_est}, checks if it's a list of matrices,
+#' and that each matrix has no missing values
+#' @param coef_list_list List of results from running \code{bootstrap_coef_est},
+#'   e.g. \code{lapply(1:N, bootstrap_coef_est)}
+#' @return A logical vector, \code{TRUE} if the element is indeed
+#'   a list of matrices with non-missing entries
 #' @keywords internal
 not_error_check <- function(coef_list_list){
     unlist(lapply(coef_list_list, function(coef_list){
         all(unlist(lapply(coef_list, function(coef_maybe_mat){
-            "matrix" %in% class(coef_maybe_mat) &&
-                !anyNA(coef_maybe_mat)
+            is.matrix(coef_maybe_mat) && !anyNA(coef_maybe_mat)
         })))
     }))
 }

@@ -1,5 +1,6 @@
 context("test-bootstrap_methods")
 
+
 test_that("testing gen_sample", {
     level_list <- list(num = 1:10,
                        let = letters[10:14])
@@ -22,6 +23,7 @@ test_that("testing gen_sample", {
                  NA)
 })
 
+
 test_that("testing gen_samp_lev", {
     expect_equal(length(gen_samp_lev(letters[5:9])),
                  4)
@@ -41,6 +43,7 @@ test_that("testing gen_samp_lev", {
                  NA)
 })
 
+
 test_that("testing gen_vector_match", {
     orig_vector <- c(1001, 1001, 2001, 3001, 3001, 3001)
     new_vector <- c(1001, 2001, 1001)
@@ -48,6 +51,7 @@ test_that("testing gen_vector_match", {
     vector_match <- gen_vector_match(orig_vector, new_vector)
     expect_equal(vector_match, c(1, 2, 3, 1, 2))
 })
+
 
 test_that("testing gen_resampling_index", {
 
@@ -112,7 +116,6 @@ test_that("testing gen_resampling_index", {
 })
 
 test_that("testing get_rand", {
-
     expect_equal(get_rand("y ~ age + (1 | school)"),
                  "school")
 
@@ -130,6 +133,7 @@ test_that("testing get_rand", {
                  vector(mode = "character"))
 })
 
+
 test_that("testing find_bars", {
     expect_equal(find_bars(as.formula("y ~ x + (1 | rand_effect)")),
                  list("1 | rand_effect"))
@@ -138,11 +142,13 @@ test_that("testing find_bars", {
                  list("1 | rand_effect"))
 })
 
+
 test_that("testing calc_entropy", {
     vec_5_6 <- c(5 / 6, 1 / 6)
     expect_equal(calc_entropy(c(rep("a", 5), "b")),
                  -sum(vec_5_6 * log(vec_5_6)))
 })
+
 
 test_that("testing list_of_matrices", {
     listlist_of_maybe_matrices <- list(
@@ -159,6 +165,7 @@ test_that("testing list_of_matrices", {
     expect_false(list_of_matrices(1:10))
     expect_false(list_of_matrices(list()))
 })
+
 
 test_that("testing not_error_check", {
     listlist_of_matrices <- list(

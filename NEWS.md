@@ -1,3 +1,11 @@
+# glmmboot 0.5.0
+
+* if `parallelism = "parallel"` but `num_cores` is left as NULL, we default to using `parallel::detectCores() - 1L` cores. This was in fact the documented behaviour previously, just sadly not the actual behaviour
+* `bootstrap_model` (and internal function `bootstrap_runner`) accepts an argument `future_packages` that will be passed along to `future.apply::future.lapply`; this is needed for futures that don't share memory, because the required global isn't visible (when using S3 generics...). This is also passed along to README/vignettes/tests etc.
+* Some documentation edits, shouldn't affect functionality
+* sampling message shown by default in interactive settings
+* fixing all incorrect uses of `class` (new matrix class is the biggest change) - mostly was in tests!
+
 # glmmboot 0.4.0
 
 API changes:

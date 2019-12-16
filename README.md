@@ -57,8 +57,9 @@ with replacement.
 It may be desired to run this package in parallel. The best way is to
 use the `future` backend, which uses `future.apply::future_lapply`. You
 do that by specifying the backend through the `future::plan` setup, and
-then setting `parallelism = "future"`. See the Quick Use vignette for
-more.
+then setting `parallelism = "future"`. It’s quite possible you’ll want
+to pass the package used to build the model to the argument
+`future_packages`. See the Quick Use vignette for more.
 
 It’s also easy to use `parallel::mclapply`; again, see the Quick Use
 vignette.
@@ -83,6 +84,7 @@ devtools::install_github("ColmanHumphrey/glmmboot")
 We’ll provide a quick example using glm. First we’ll set up some data:
 
 ``` r
+set.seed(15278086) # Happy for Nadia and Alan
 x1 <- rnorm(50)
 x2 <- runif(50)
 
@@ -98,8 +100,8 @@ sample_frame <- data.frame(x1 = x1, x2 = x2, y = y)
 Typically this model is fit with logistic regression:
 
 ``` r
-base_run <- glm(y ~ x1 + x2, 
-                family = binomial(link = 'logit'), 
+base_run <- glm(y ~ x1 + x2,
+                family = binomial(link = 'logit'),
                 data = sample_frame)
 summary(base_run)
 # 
@@ -109,19 +111,19 @@ summary(base_run)
 # 
 # Deviance Residuals: 
 #     Min       1Q   Median       3Q      Max  
-# -1.5543  -1.2859   0.8632   0.9769   1.2337  
+# -1.6819  -1.2340   0.7048   0.9389   1.3213  
 # 
 # Coefficients:
 #             Estimate Std. Error z value Pr(>|z|)
-# (Intercept)   0.3403     0.5334   0.638    0.523
-# x1           -0.2684     0.2883  -0.931    0.352
-# x2            0.2708     0.9480   0.286    0.775
+# (Intercept)  -0.1161     0.5890  -0.197    0.844
+# x1           -0.5147     0.3387  -1.519    0.129
+# x2            1.0933     1.0065   1.086    0.277
 # 
 # (Dispersion parameter for binomial family taken to be 1)
 # 
-#     Null deviance: 66.406  on 49  degrees of freedom
-# Residual deviance: 65.414  on 47  degrees of freedom
-# AIC: 71.414
+#     Null deviance: 65.342  on 49  degrees of freedom
+# Residual deviance: 61.944  on 47  degrees of freedom
+# AIC: 67.944
 # 
 # Number of Fisher Scoring iterations: 4
 ```
@@ -130,11 +132,9 @@ Let’s run a bootstrap.
 
 ``` r
 library(glmmboot)
-set.seed(15278086) # Happy for Nadia and Alan
-boot_results <- bootstrap_model(base_model = base_run, 
+boot_results <- bootstrap_model(base_model = base_run,
                                 base_data = sample_frame,
                                 resamples = 999)
-# Performing case resampling (no random effects)
 ```
 
 And the results:
@@ -142,13 +142,13 @@ And the results:
 ``` r
 print(boot_results)
 #               estimate boot 2.5% boot 97.5% boot p_value base p_value
-# (Intercept)  0.3403002   -0.5647     1.3247        0.516       0.5266
-# x1          -0.2683814   -0.8386     0.2789        0.372       0.3566
-# x2           0.2708438   -1.3674     2.0126        0.778       0.7764
+# (Intercept) -0.1160896   -1.2295     0.9809        0.830       0.8446
+# x1          -0.5146778   -1.1245     0.0455        0.076       0.1353
+# x2           1.0932707   -0.7517     3.1328        0.284       0.2829
 #             base 2.5% base 97.5% boot/base width
-# (Intercept)   -0.7327     1.4133       0.8804217
-# x1            -0.8483     0.3116       0.9634510
-# x2            -1.6363     2.1780       0.8861446
+# (Intercept)   -1.3010     1.0688       0.9327523
+# x1            -1.1961     0.1667       0.8584962
+# x2            -0.9315     3.1181       0.9592352
 ```
 
 The estimates are the same, since we just pull from the base model. The
@@ -214,18 +214,17 @@ basically meaningless - just for illustration):
 ``` r
 zi_results <- bootstrap_model(base_model = fit_zipoisson,
                               base_data = owls,
-                              resamples = 3,
-                              parallelism = "future")
-# Performing block resampling, over nest
+                              resamples = 3)
+
 print(zi_results)
 # $cond
 #                              estimate boot 2.5% boot 97.5% boot p_value
-# (Intercept)                2.53994692    1.2486     2.9952          0.5
-# ftSatiated                -0.29110639   -0.3479    -0.0040          0.5
-# ArrivalTime               -0.06807809   -0.0927    -0.0192          0.5
-# SexParentMale              0.44884508   -0.7715     0.9317          1.0
-# ftSatiated:SexParentMale   0.10472505    0.0444     0.2690          0.5
-# ArrivalTime:SexParentMale -0.02139750   -0.0430     0.0299          1.0
+# (Intercept)                2.53994692    1.9197     2.9229          0.5
+# ftSatiated                -0.29110639   -0.3058    -0.1889          0.5
+# ArrivalTime               -0.06807809   -0.0866    -0.0392          0.5
+# SexParentMale              0.44884508    0.1134     1.2690          0.5
+# ftSatiated:SexParentMale   0.10472505   -0.1153     0.2804          1.0
+# ArrivalTime:SexParentMale -0.02139750   -0.0527    -0.0087          0.5
 #                           base p_value base 2.5% base 97.5%
 # (Intercept)                     0.0000    1.8411     3.2388
 # ftSatiated                      0.0000   -0.4079    -0.1743
@@ -234,18 +233,18 @@ print(zi_results)
 # ftSatiated:SexParentMale        0.1506   -0.0381     0.2475
 # ArrivalTime:SexParentMale       0.2436   -0.0574     0.0146
 #                           boot/base width
-# (Intercept)                     1.2495857
-# ftSatiated                      1.4714964
-# ArrivalTime                     1.3134953
-# SexParentMale                   0.9654847
-# ftSatiated:SexParentMale        0.7864098
-# ArrivalTime:SexParentMale       1.0127490
+# (Intercept)                     0.7177368
+# ftSatiated                      0.5002454
+# ArrivalTime                     0.8479791
+# SexParentMale                   0.6550388
+# ftSatiated:SexParentMale        1.3852712
+# ArrivalTime:SexParentMale       0.6116518
 # 
 # $zi
 #              estimate boot 2.5% boot 97.5% boot p_value base p_value
-# (Intercept) -1.057534   -1.0575     -0.788          0.5            0
+# (Intercept) -1.057534   -1.0575      -0.84          0.5            0
 #             base 2.5% base 97.5% boot/base width
-# (Intercept)    -1.242    -0.8731       0.7306774
+# (Intercept)    -1.242    -0.8731       0.5895082
 ```
 
 We could also have run this with the `future.apply` backend:
@@ -257,5 +256,6 @@ plan("multiprocess")
 zi_results <- bootstrap_model(base_model = fit_zipoisson,
                               base_data = owls,
                               resamples = 1000,
-                              parallelism = "future")
+                              parallelism = "future",
+                              future_packages = "glmmTMB")
 ```

@@ -7,16 +7,17 @@
 gen_samp_lev(levels, unique_lim = NULL, reduce_by_one = TRUE)
 }
 \arguments{
-\item{levels}{The levels to sample}
+\item{levels}{The levels to sample.}
 
-\item{unique_lim}{Default NULL; optionally a required number of unique
-elements to have in the sample}
+\item{unique_lim}{Default \code{NULL};
+optionally a required number of unique elements to have in the sample}
 
-\item{reduce_by_one}{Logical, default TRUE; for (potentially) more accurate coverage,
-resample one less than the number of levels in each list}
+\item{reduce_by_one}{Logical, default \code{TRUE};
+for greater coverage,
+resample one less than the number of levels in each list.}
 }
 \value{
-A sample of 'levels'; a vector.
+A sample of \code{levels}; a vector.
 }
 \description{
 For resampling from a single set of levels

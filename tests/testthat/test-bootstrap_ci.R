@@ -1,5 +1,6 @@
 context("test-bootstrap_ci")
 
+
 test_that("testing bootstrap_ci", {
     x <- rnorm(20)
     y <- rnorm(20)
@@ -11,10 +12,11 @@ test_that("testing bootstrap_ci", {
                                  resamples = 20,
                                  return_coefs_instead = TRUE)
 
-    expect_equal(class(bootstrap_ci(list_out$base_coef_se,
-                                    list_out$resampled_coef_se)),
-                 "matrix")
+    expect_true(inherits(bootstrap_ci(list_out$base_coef_se,
+                                      list_out$resampled_coef_se),
+                         "matrix"))
 })
+
 
 test_that("testing combine_resampled_lists", {
     x <- rnorm(20)
@@ -43,6 +45,7 @@ test_that("testing combine_resampled_lists", {
                  combine_resampled_lists(list(list_out1, list_out2, list_out3),
                                          return_combined_list = TRUE))
 })
+
 
 test_that("testing interior components", {
     x <- rnorm(20)

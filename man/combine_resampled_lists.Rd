@@ -10,28 +10,21 @@ combine_resampled_lists(..., return_combined_list = FALSE)
 CombineResampledLists(..., return_combined_list = FALSE)
 }
 \arguments{
-\item{...}{Say our output from bootstrap_model from three separate computers is
-output_list1,
-output_list2,
-output_list3
-We can run: combine_resampled_lists(output_list1,
-                                    output_list2,
-                                    output_list3)
-OR: create a list of lists:
-output_list_list <- list(output_list1, output_list2, output_list3)
-and then: combine_resampled_lists(output_list_list)}
+\item{...}{List of outputs to be combined, or just a bunch of output entries
+as separate unnamed arguments.}
 
-\item{return_combined_list}{Logical, default FALSE. TRUE if you want the combined
-list of lists, FALSE for just the output from bootstrap_ci applied to it.}
+\item{return_combined_list}{Logical, default \code{FALSE}.
+\code{TRUE} if you want the combined list of lists,
+\code{FALSE} for just the output from bootstrap_ci applied to it.}
 }
 \value{
-Returns the same output as bootstrap_ci by default,
+Returns the same output as \code{bootstrap_ci} by default,
   or the combined list (as if you had just run bootstrap_model once with
-  all resamples) if return_combined_list = TRUE
+  all resamples) if \code{return_combined_list = TRUE}
 }
 \description{
 If you run glmmboot on e.g. a grid of computers,
-set return_coefs_instead = TRUE for each.
+set \code{return_coefs_instead = TRUE} for each.
 Then enter them all here. Either just list them out,
 or put them into one list and enter them.
 }

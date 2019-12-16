@@ -1,17 +1,13 @@
 ## Release Summary
 
-For the most part, functionality is not fundamentally changed in terms of the results from the primary functions in common situations.
+As requested, fixes issues where `class()` was assumed to return a length-one result (mostly was used in testing). All should be done now.
 
-Some functionality changes:
-* gen_resampling_index is now better in many ways, including more performative, but should return the same results as before
-* parallel backends more robustly setup, including support for `future.apply::future_lapply`
-* The code now works correctly in situations where the base model returns a list of coefficients
+Apart from that, primary change is to add a better default for `parallelism = "parallel"`, and to provide a solve for issues with `parallelism = "future"`:
 
-Naming changes:
-* Any function that didn't have a snake_case name now has one, including most notably the two main exported functions, `bootstrap_model` and `bootstrap_ci`. The old version still exist and are marked as deprecated.
-* very mild reordering of the arguments for bootstrap_model, to reflect that the base_data should be supplied in basically all circumstances
+* if `parallelism = "parallel"` but `num_cores` is left as NULL, we default to using `parallel::detectCores() - 1L` cores. This was in fact the documented behaviour previously, just sadly not the actual behaviour
+* `bootstrap_model` (and internal function `bootstrap_runner`) accepts an argument `future_packages` that will be passed along to `future.apply::future.lapply`; this is needed for futures that don't share memory, because the required global isn't visible (when using S3 generics). This is also passed along to README/vignettes/tests etc.
 
-Further: added code coverage
+Some very minor documentation and messaging edits rounds out the submission.
 
 ## Test environments
 * local OS X install, R 3.6.1

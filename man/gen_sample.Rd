@@ -8,18 +8,19 @@ gen_sample(list_of_levels, rand_columns = NULL,
   unique_resample_lim = NULL, reduce_by_one = TRUE)
 }
 \arguments{
-\item{list_of_levels}{list of vectors of levels of each random effect}
+\item{list_of_levels}{List of vectors of levels of each random effect.}
 
-\item{rand_columns}{Default NULL.
-name of columns to randomise over; if NULL, will use
-all in 'list_of_levels'}
+\item{rand_columns}{Default \code{NULL}. Name of columns to randomise over;
+if \code{NULL}, will use all in \code{list_of_levels}}
 
-\item{unique_resample_lim}{Default NULL; optionally set a minimal number of unique levels each sample
+\item{unique_resample_lim}{Default \code{NULL};
+optionally set a minimal number of unique levels each sample
 must produce. Note that it should be a named vector,
 the same as the levels to randomise over.}
 
-\item{reduce_by_one}{Logical, default TRUE; for (potentially) more accurate coverage,
-resample one less than the number of levels in each list}
+\item{reduce_by_one}{Logical, default \code{TRUE};
+for greater coverage,
+resample one less than the number of levels in each list.}
 }
 \value{
 A list of samples

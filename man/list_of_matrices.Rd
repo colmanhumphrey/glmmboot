@@ -7,16 +7,17 @@
 list_of_matrices(list_to_check, allow_null = TRUE)
 }
 \arguments{
-\item{list_to_check}{The "list" (maybe!) to check}
+\item{list_to_check}{The potential list to check}
 
-\item{allow_null}{If an element is NULL, is that OK?}
+\item{allow_null}{If an element is \code{NULL}, is that OK?
+Default \code{TRUE}}
 }
 \value{
-TRUE or FALSE
+Logical
 }
 \description{
 Checks that an object is a list, and also
 that the list is a collection of matrices.
-Currently returns FALSE on an empty list
+Currently returns \code{FALSE} on an empty list
 }
 \keyword{internal}

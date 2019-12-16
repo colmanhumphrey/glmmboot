@@ -173,11 +173,11 @@ bootstrap_model <- function(base_model,
                      "but it's not installed", call. = FALSE)
             } # nocov end
 
-            if (is.null(num_cores)) {
+            if (is.null(num_cores)) { # nocov start
                 num_cores <- max(parallel::detectCores() - 1L, 1L)
                 message("`num_cores` not set, defaulting to ", num_cores,
                         " (`parallel::detectCores() - 1L`)")
-            }
+            } # nocov end
         }
     }
 
@@ -323,7 +323,7 @@ bootstrap_model <- function(base_model,
     }
 
     ## keep going until solved
-    max_redos <- 10L
+    max_redos <- 15L
     redo_iter <- 1L
     while (sum(error_ind) > 0L && redo_iter <= max_redos) {
         message(sum(error_ind), " error(s) to redo")

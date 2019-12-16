@@ -6,18 +6,33 @@
 \title{Computes bootstrap resamples of your data,
 stores estimates + SEs.}
 \usage{
-bootstrap_model(base_model, base_data, resamples = 9999,
-  return_coefs_instead = FALSE, parallelism = c("none", "future",
-  "parallel"), resample_specific_blocks = NULL,
-  unique_resample_lim = NULL, narrowness_avoid = TRUE,
-  num_cores = NULL, future_packages = NULL,
-  suppress_sampling_message = !interactive())
+bootstrap_model(
+  base_model,
+  base_data,
+  resamples = 9999,
+  return_coefs_instead = FALSE,
+  parallelism = c("none", "future", "parallel"),
+  resample_specific_blocks = NULL,
+  unique_resample_lim = NULL,
+  narrowness_avoid = TRUE,
+  num_cores = NULL,
+  future_packages = NULL,
+  suppress_sampling_message = !interactive()
+)
 
-BootGlmm(base_model, resamples = 9999, base_data = NULL,
-  return_coefs_instead = FALSE, resample_specific_blocks = NULL,
-  unique_resample_lim = NULL, narrowness_avoid = TRUE,
-  num_cores = NULL, suppress_sampling_message = FALSE,
-  suppress_loading_bar = FALSE, allow_conv_error = FALSE)
+BootGlmm(
+  base_model,
+  resamples = 9999,
+  base_data = NULL,
+  return_coefs_instead = FALSE,
+  resample_specific_blocks = NULL,
+  unique_resample_lim = NULL,
+  narrowness_avoid = TRUE,
+  num_cores = NULL,
+  suppress_sampling_message = FALSE,
+  suppress_loading_bar = FALSE,
+  allow_conv_error = FALSE
+)
 }
 \arguments{
 \item{base_model}{The pre-bootstrap model, i.e. the model output
@@ -37,8 +52,8 @@ but start very small to make sure it works on
 your data properly, and to get a rough timing estimate etc.}
 
 \item{return_coefs_instead}{Logical, default \code{FALSE}: do you want the
-list of lists of results for each bootstrap sample (set to \code{TRUE}), or the
-matrix output of all samples? See return for more details.}
+list of lists of results for each bootstrap sample (set to \code{TRUE}),
+or the matrix output of all samples? See return for more details.}
 
 \item{parallelism}{Type of parallelism (if any) to use to run the resamples.
 Options are:
@@ -82,7 +97,7 @@ using a plan that doesn't have shared memory, because the
 model is updated with the S3 generic \code{update}.}
 
 \item{suppress_sampling_message}{Logical, the default is
-to supress if not in an interactive session.
+to suppress if not in an interactive session.
 Do you want the function to message the console with the type of
 bootstrapping? If block resampling over random effects, then it'll say
 what effect it's sampling over; if case resampling -

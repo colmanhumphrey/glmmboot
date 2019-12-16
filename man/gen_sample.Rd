@@ -4,8 +4,12 @@
 \alias{gen_sample}
 \title{Generates block resamples}
 \usage{
-gen_sample(list_of_levels, rand_columns = NULL,
-  unique_resample_lim = NULL, reduce_by_one = TRUE)
+gen_sample(
+  list_of_levels,
+  rand_columns = NULL,
+  unique_resample_lim = NULL,
+  reduce_by_one = TRUE
+)
 }
 \arguments{
 \item{list_of_levels}{List of vectors of levels of each random effect.}

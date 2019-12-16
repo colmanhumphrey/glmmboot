@@ -5,11 +5,21 @@
 \alias{BootCI}
 \title{Generating bootstrap confidence intervals.}
 \usage{
-bootstrap_ci(base_coef_se = NULL, resampled_coef_se = NULL,
-  orig_df = NULL, alpha_level = 0.05, probs = NULL)
+bootstrap_ci(
+  base_coef_se = NULL,
+  resampled_coef_se = NULL,
+  orig_df = NULL,
+  alpha_level = 0.05,
+  probs = NULL
+)
 
-BootCI(base_coef_se = NULL, resampled_coef_se = NULL, orig_df = NULL,
-  alp_level = 0.05, probs = NULL)
+BootCI(
+  base_coef_se = NULL,
+  resampled_coef_se = NULL,
+  orig_df = NULL,
+  alp_level = 0.05,
+  probs = NULL
+)
 }
 \arguments{
 \item{base_coef_se}{Estimates and SEs from full sample. In matrix form,

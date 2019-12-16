@@ -10,7 +10,7 @@ Apart from that, primary change is to add a better default for `parallelism = "p
 Some very minor documentation and messaging edits rounds out the submission.
 
 ## Test environments
-* local OS X install, R 3.6.1
+* local OS X install, R 3.6.2
 * Ubuntu 16.04.6 LTS (on travis-ci), R 3.6.1
 * win-builder (devel and release), R 3.6.1
 

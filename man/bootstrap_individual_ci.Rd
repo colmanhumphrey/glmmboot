@@ -4,8 +4,13 @@
 \alias{bootstrap_individual_ci}
 \title{Runs the bootstrap estimation method for a single set of coefs (not a list)}
 \usage{
-bootstrap_individual_ci(base_matrix = NULL, resampled_coef_list = NULL,
-  orig_df = NULL, alpha_level = 0.05, probs = NULL)
+bootstrap_individual_ci(
+  base_matrix = NULL,
+  resampled_coef_list = NULL,
+  orig_df = NULL,
+  alpha_level = 0.05,
+  probs = NULL
+)
 }
 \arguments{
 \item{orig_df}{Degrees of freedom to use to calculate the

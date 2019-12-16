@@ -4,8 +4,7 @@
 \alias{gen_vector_match}
 \title{Finds all occurrences of new_vector in orig_vector}
 \usage{
-gen_vector_match(orig_vector, new_vector,
-  current_index = vector("integer", 0))
+gen_vector_match(orig_vector, new_vector, current_index = vector("integer", 0))
 }
 \arguments{
 \item{orig_vector}{Vector to find indices from.}

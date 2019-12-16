@@ -4,8 +4,13 @@
 \alias{bootstrap_runner}
 \title{Runs the bootstrapping of the models.}
 \usage{
-bootstrap_runner(bootstrap_function, resamples, parallelism = c("none",
-  "future", "parallel"), num_cores = NULL, future_packages = NULL)
+bootstrap_runner(
+  bootstrap_function,
+  resamples,
+  parallelism = c("none", "future", "parallel"),
+  num_cores = NULL,
+  future_packages = NULL
+)
 }
 \arguments{
 \item{bootstrap_function}{Function that we wish to run

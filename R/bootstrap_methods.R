@@ -85,7 +85,7 @@ gen_samp_lev <- function(levels,
 #' @return Returns a vector of indices from orig_vector that correspond to
 #'   values in new_vector.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #'     orig_vector <- c(1, 1, 2, 3, 3, 3)
 #'     new_vector <- c(1, 2, 1)
 #'

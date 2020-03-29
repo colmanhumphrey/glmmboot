@@ -23,7 +23,7 @@ matching values in orig_vector. This means that if new_vector
 has duplicates, we'll duplicate the indices from orig_vector too
 }
 \examples{
-\donttest{
+\dontrun{
     orig_vector <- c(1, 1, 2, 3, 3, 3)
     new_vector <- c(1, 2, 1)
 

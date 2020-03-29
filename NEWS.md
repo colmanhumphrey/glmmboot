@@ -1,3 +1,7 @@
+# glmmboot 0.5.1
+
+* Changing a `donttest` to a `dontrun` within an example.
+
 # glmmboot 0.5.0
 
 * if `parallelism = "parallel"` but `num_cores` is left as NULL, we default to using `parallel::detectCores() - 1L` cores. This was in fact the documented behaviour previously, just sadly not the actual behaviour
@@ -26,7 +30,7 @@ API changes:
 * Added a warning if data not supplied explicitly
 * Changed two-sided p-value calculation to more tightly respect the fact that the bootstrap t-values
   intentionally are not forced to be symmetric.
-  
+
 # Travis CI:
 [![Travis-CI Build Status](https://travis-ci.org/ColmanHumphrey/glmmboot.svg?branch=master)](https://travis-ci.org/ColmanHumphrey/glmmboot)
 
@@ -34,6 +38,3 @@ API changes:
 
 * Added a `NEWS.md` file to track changes to the package.
 * Initial release of glmmboot
-
-
-

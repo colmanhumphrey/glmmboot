@@ -1,7 +1,7 @@
 Package: glmmboot
 Type: Package
 Title: Bootstrap Resampling for Mixed Effects and Plain Models
-Version: 0.5.0.9000
+Version: 0.5.1
 Authors@R: person("Colman", "Humphrey", email = "humphrc@tcd.ie",
   role = c("aut", "cre"))
 Description: Performs bootstrap resampling for most models that update() works for. There

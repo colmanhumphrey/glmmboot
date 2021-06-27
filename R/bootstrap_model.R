@@ -358,37 +358,6 @@ bootstrap_model <- function(base_model,
 }
 
 
-#' @export
-#' @rdname bootstrap_model
-#' @param suppress_loading_bar
-#' defunct now
-#' @param allow_conv_error
-#' defunct now
-BootGlmm <- function(base_model, # nocov start
-                     resamples = 9999,
-                     base_data = NULL,
-                     return_coefs_instead = FALSE,
-                     resample_specific_blocks = NULL,
-                     unique_resample_lim = NULL,
-                     narrowness_avoid = TRUE,
-                     num_cores = NULL,
-                     suppress_sampling_message = FALSE,
-                     suppress_loading_bar = FALSE,
-                     allow_conv_error = FALSE){
-    .Deprecated("bootstrap_model")
-
-    bootstrap_model(base_model = base_model,
-                    base_data = base_data,
-                    resamples = resamples,
-                    return_coefs_instead = return_coefs_instead,
-                    resample_specific_blocks = resample_specific_blocks,
-                    unique_resample_lim = unique_resample_lim,
-                    narrowness_avoid = narrowness_avoid,
-                    num_cores = num_cores,
-                    suppress_sampling_message = suppress_sampling_message)
-} # nocov end
-
-
 #' Runs the bootstrapping of the models.
 #'
 #' This function gets passed a function that runs a single bootstrap resample

@@ -239,24 +239,6 @@ ci_variable <- function(base_est,
 }
 
 
-#' @rdname bootstrap_ci
-#' @export
-#' @param alp_level
-#' now alpha_level
-BootCI <- function(base_coef_se = NULL, # nocov start
-                   resampled_coef_se = NULL,
-                   orig_df = NULL,
-                   alp_level = 0.05,
-                   probs = NULL){
-    .Deprecated("bootstrap_ci")
-    bootstrap_ci(base_coef_se = base_coef_se,
-                 resampled_coef_se = resampled_coef_se,
-                 orig_df = orig_df,
-                 alpha_level = alp_level,
-                 probs = probs)
-} # nocov end
-
-
 #' Combines output from multiple bootstrap_model calls
 #'
 #' If you run glmmboot on e.g. a grid of computers,
@@ -333,12 +315,3 @@ combine_resampled_lists <- function(...,
     bootstrap_ci(base_coef_se = reg_base_coef,
                  resampled_coef_se = reg_resampled)
 }
-
-#' @rdname combine_resampled_lists
-#' @export
-CombineResampledLists <- function(..., # nocov start
-                                  return_combined_list = FALSE){
-    .Deprecated("combine_resampled_lists")
-    combine_resampled_lists(...,
-                            return_combined_list = return_combined_list)
-} # nocov end

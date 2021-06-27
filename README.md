@@ -15,9 +15,9 @@ status](https://www.r-pkg.org/badges/version/glmmboot)](https://cran.r-project.o
 
 ## Overview
 
-glmmboot provides a simple interface for creating bootstrap confidence
-intervals using a wide set of models. The primary function is
-`bootstrap_model`, which has three primary arguments:
+glmmboot provides a simple interface for creating non-parametric
+bootstrap confidence intervals using a wide set of models. The primary
+function is `bootstrap_model`, which has three primary arguments:
 
 -   `base_model`: the model run on the full data as you normally would,
     prior to bootstrapping
@@ -40,6 +40,8 @@ For models with random effects:
 
 With no random effects, performs case resampling: resamples each row
 with replacement.
+
+All of these are considered non-parametric.
 
 ## Requirements:
 

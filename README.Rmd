@@ -25,7 +25,7 @@ options(warnPartialMatchArgs = FALSE,
 
 ## Overview
 
-glmmboot provides a simple interface for creating bootstrap
+glmmboot provides a simple interface for creating non-parametric bootstrap
 confidence intervals using a wide set of models. The primary function
 is `bootstrap_model`, which has three primary arguments:
 
@@ -46,6 +46,8 @@ For models with random effects:
 * it's also possible to specify multiple random effects to block sample over
 
 With no random effects, performs case resampling: resamples each row with replacement.
+
+All of these are considered non-parametric.
 
 ## Requirements:
 

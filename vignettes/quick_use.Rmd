@@ -24,8 +24,9 @@ options(warnPartialMatchArgs = FALSE,
 
 For even quicker usage instructions, see the README.
 
-The general idea of this package is that you can throw nearly any
-model built in the typical R fashion. For now, we just need
+The general idea behind this package is for you to be able to throw
+in nearly any model built in the typical R fashion and get back
+a non-parametric bootstrap analysis. For now, we just need
 a somewhat standard way of extracting fixed effects, and that
 `update` works, which is nearly always the case.
 

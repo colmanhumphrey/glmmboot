@@ -4,14 +4,16 @@
 \name{test_data}
 \alias{test_data}
 \title{Simulated data containing three fixed effects and one random effect}
-\format{A data frame with 300 rows and 4 variables:
+\format{
+A data frame with 300 rows and 4 variables:
 \describe{
   \item{x_var1}{independent normally distributed variable}
   \item{x_var2}{independent normally distributed variable}
   \item{x_var3}{independent normally distributed variable}
   \item{subj}{levels of random effect}
   \item{y}{outcome: lives in interval [0,1]}
-}}
+}
+}
 \usage{
 test_data
 }

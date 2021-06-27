@@ -2,7 +2,6 @@
 % Please edit documentation in R/bootstrap_model.R
 \name{bootstrap_model}
 \alias{bootstrap_model}
-\alias{BootGlmm}
 \title{Computes bootstrap resamples of your data,
 stores estimates + SEs.}
 \usage{
@@ -18,20 +17,6 @@ bootstrap_model(
   num_cores = NULL,
   future_packages = NULL,
   suppress_sampling_message = !interactive()
-)
-
-BootGlmm(
-  base_model,
-  resamples = 9999,
-  base_data = NULL,
-  return_coefs_instead = FALSE,
-  resample_specific_blocks = NULL,
-  unique_resample_lim = NULL,
-  narrowness_avoid = TRUE,
-  num_cores = NULL,
-  suppress_sampling_message = FALSE,
-  suppress_loading_bar = FALSE,
-  allow_conv_error = FALSE
 )
 }
 \arguments{
@@ -103,10 +88,6 @@ bootstrapping? If block resampling over random effects, then it'll say
 what effect it's sampling over; if case resampling -
 in which case it'll say as much.
 Set \code{TRUE} to hide message.}
-
-\item{suppress_loading_bar}{defunct now}
-
-\item{allow_conv_error}{defunct now}
 }
 \value{
 By default (with \code{return_coefs_instead} being \code{FALSE}),

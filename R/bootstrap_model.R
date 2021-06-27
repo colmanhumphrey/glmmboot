@@ -127,12 +127,12 @@ bootstrap_model <- function(base_model,
         } else {
             stop("base_data cannot be automatically inferred, ",
                  "please supply data as base_data ",
-                 "to this function", call. = FALSE)
+                 "to this function")
         }
 
         warning("Please supply data through the argument base_data; ",
                 "automatic reading from your model can produce ",
-                "unforeseeable bugs.", call. = FALSE)
+                "unforeseeable bugs.")
     }
 
     if (missing(parallelism)) {
@@ -142,7 +142,7 @@ bootstrap_model <- function(base_model,
             if (!requireNamespace("parallel", quietly = TRUE)) { # nocov start
                 stop("setting `num_cores` greater than 1 without setting ",
                      "`parallelism` uses `package:parallel`, ",
-                     "but it's not installed", call. = FALSE)
+                     "but it's not installed")
             }
             parallelism <- "parallel"  # nocov end
         } else {
@@ -152,25 +152,23 @@ bootstrap_model <- function(base_model,
         parallelism <- match.arg(parallelism)
         if (parallelism == "none" && !is.null(num_cores) && num_cores > 1) {
             stop("contradiction between `parallelism = \"none\"` ",
-                 "and `num_cores = ", num_cores, "`; please resolve",
-                 call. = FALSE)
+                 "and `num_cores = ", num_cores, "`; please resolve")
         }
         if (parallelism == "future") {
             if (!requireNamespace("future.apply", quietly = TRUE)) { # nocov start
                 stop("`parallelism = \"future\"` uses `package:future.apply`, ",
-                     "but it's not installed", call. = FALSE)
+                     "but it's not installed")
             } # nocov end
             if (!is.null(num_cores)) {
                 stop("with `parallelism = \"future\"`, the `num_cores` ",
                      "argument is not used to set up the backend; ",
-                     "use `future::plan` instead",
-                     call. = FALSE)
+                     "use `future::plan` instead")
             }
         }
         if (parallelism == "parallel") {
             if (!requireNamespace("parallel", quietly = TRUE)) { # nocov start
                 stop("`parallelism = \"parallel\"` uses `package:parallel`, ",
-                     "but it's not installed", call. = FALSE)
+                     "but it's not installed")
             } # nocov end
 
             if (is.null(num_cores)) { # nocov start
@@ -183,7 +181,7 @@ bootstrap_model <- function(base_model,
 
     if (parallelism != "future" && !is.null(future_packages)) {
         stop("Argument `future_packages` should only be set when ",
-             "using `parallelism = \"future\"`", call. = FALSE)
+             "using `parallelism = \"future\"`")
     }
 
     ##------------------------------------
@@ -205,7 +203,7 @@ bootstrap_model <- function(base_model,
     } else {
         if (!list_of_matrices(base_coef)) {
             stop("currently this method needs `coef(summary(base_model))` ", # nocov start
-                 "to be a matrix, or a list of them", call. = FALSE) # nocov end
+                 "to be a matrix, or a list of them") # nocov end
         }
         ## only calc not_null once, but local scope the result
         extract_coef <- (function(not_null){
@@ -234,7 +232,7 @@ bootstrap_model <- function(base_model,
         if (sum(rand_cols %in% resample_specific_blocks) == 0 &&
             length(rand_cols) > 0) {
             stop("No random columns from formula found ",
-                 "in resample_specific_blocks", call. = FALSE)
+                 "in resample_specific_blocks")
         }
         rand_cols <- rand_cols[rand_cols %in% resample_specific_blocks]
     }
@@ -338,8 +336,7 @@ bootstrap_model <- function(base_model,
     }
     if (any(error_ind)) {
         stop("could not generate error-free resamples in ", # nocov start
-             max_redos, " attempts",
-             call. = FALSE) # nocov end
+             max_redos, " attempts") # nocov end
     }
 
     if (return_coefs_instead) {
@@ -359,37 +356,6 @@ bootstrap_model <- function(base_model,
                  resampled_coef_se = coef_se_list,
                  orig_df = orig_df)
 }
-
-
-#' @export
-#' @rdname bootstrap_model
-#' @param suppress_loading_bar
-#' defunct now
-#' @param allow_conv_error
-#' defunct now
-BootGlmm <- function(base_model, # nocov start
-                     resamples = 9999,
-                     base_data = NULL,
-                     return_coefs_instead = FALSE,
-                     resample_specific_blocks = NULL,
-                     unique_resample_lim = NULL,
-                     narrowness_avoid = TRUE,
-                     num_cores = NULL,
-                     suppress_sampling_message = FALSE,
-                     suppress_loading_bar = FALSE,
-                     allow_conv_error = FALSE){
-    .Deprecated("bootstrap_model")
-
-    bootstrap_model(base_model = base_model,
-                    base_data = base_data,
-                    resamples = resamples,
-                    return_coefs_instead = return_coefs_instead,
-                    resample_specific_blocks = resample_specific_blocks,
-                    unique_resample_lim = unique_resample_lim,
-                    narrowness_avoid = narrowness_avoid,
-                    num_cores = num_cores,
-                    suppress_sampling_message = suppress_sampling_message)
-} # nocov end
 
 
 #' Runs the bootstrapping of the models.
@@ -417,7 +383,8 @@ bootstrap_runner <- function(bootstrap_function,
                                  function(i){
                                      bootstrap_function()
                                  },
-                                 future.packages = future_packages))
+                                 future.packages = future_packages,
+                                 future.seed = TRUE))
     }
 
     if (parallelism == "parallel") {

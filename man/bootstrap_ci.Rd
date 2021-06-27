@@ -2,7 +2,6 @@
 % Please edit documentation in R/bootstrap_ci.R
 \name{bootstrap_ci}
 \alias{bootstrap_ci}
-\alias{BootCI}
 \title{Generating bootstrap confidence intervals.}
 \usage{
 bootstrap_ci(
@@ -10,14 +9,6 @@ bootstrap_ci(
   resampled_coef_se = NULL,
   orig_df = NULL,
   alpha_level = 0.05,
-  probs = NULL
-)
-
-BootCI(
-  base_coef_se = NULL,
-  resampled_coef_se = NULL,
-  orig_df = NULL,
-  alp_level = 0.05,
   probs = NULL
 )
 }
@@ -41,8 +32,6 @@ t-values used for the base interval.}
 
 \item{probs}{Default \code{NULL}, and will use \code{alpha_level} to set
 endpoints. Else will calculate these CI endpoints.}
-
-\item{alp_level}{now alpha_level}
 }
 \value{
 A matrix containing:

@@ -15,14 +15,14 @@ status](https://www.r-pkg.org/badges/version/glmmboot)](https://cran.r-project.o
 
 ## Overview
 
-glmmboot provides a simple interface for creating bootstrap confidence
-intervals using a wide set of models. The primary function is
-`bootstrap_model`, which has three primary arguments:
+glmmboot provides a simple interface for creating non-parametric
+bootstrap confidence intervals using a wide set of models. The primary
+function is `bootstrap_model`, which has three primary arguments:
 
-  - `base_model`: the model run on the full data as you normally would,
+-   `base_model`: the model run on the full data as you normally would,
     prior to bootstrapping
-  - `base_data`: the dataset used
-  - `resamples`: how many bootstrap resamples you wish to perform
+-   `base_data`: the dataset used
+-   `resamples`: how many bootstrap resamples you wish to perform
 
 Another function, `bootstrap_ci`, converts output from bootstrap model
 runs into confidence intervals and p-values. By default,
@@ -32,24 +32,24 @@ runs into confidence intervals and p-values. By default,
 
 For models with random effects:
 
-  - the default (and recommended) behaviour will be to block sample over
+-   the default (and recommended) behaviour will be to block sample over
     the effect with the largest entropy (generally the one with the most
     levels)
-  - it’s also possible to specify multiple random effects to block
+-   it’s also possible to specify multiple random effects to block
     sample over
 
 With no random effects, performs case resampling: resamples each row
 with replacement.
+
+All of these are considered non-parametric.
 
 ## Requirements:
 
 1.  the model should work with the function `update`, to change the data
 2.  the coefficients are extractable using `coef(summary(model))`
 
-<!-- end list -->
-
-  - either directly, i.e. this gives a matrix
-  - or it’s a list of matrices; this includes e.g. zero-inflated models,
+-   either directly, i.e. this gives a matrix
+-   or it’s a list of matrices; this includes e.g. zero-inflated models,
     which produce two matrices of coefficients
 
 ## Parallel
@@ -84,7 +84,7 @@ devtools::install_github("ColmanHumphrey/glmmboot")
 We’ll provide a quick example using glm. First we’ll set up some data:
 
 ``` r
-set.seed(15278086) # Happy for Nadia and Alan
+set.seed(15278086)
 x1 <- rnorm(50)
 x2 <- runif(50)
 
@@ -141,14 +141,14 @@ And the results:
 
 ``` r
 print(boot_results)
-#               estimate boot 2.5% boot 97.5% boot p_value base p_value
-# (Intercept) -0.1160896   -1.2295     0.9809        0.830       0.8446
-# x1          -0.5146778   -1.1245     0.0455        0.076       0.1353
-# x2           1.0932707   -0.7517     3.1328        0.284       0.2829
-#             base 2.5% base 97.5% boot/base width
-# (Intercept)   -1.3010     1.0688       0.9327523
-# x1            -1.1961     0.1667       0.8584962
-# x2            -0.9315     3.1181       0.9592352
+#               estimate boot 2.5% boot 97.5% boot p_value base p_value base 2.5%
+# (Intercept) -0.1160896   -1.2295     0.9809        0.830       0.8446   -1.3010
+# x1          -0.5146778   -1.1245     0.0455        0.076       0.1353   -1.1961
+# x2           1.0932707   -0.7517     3.1328        0.284       0.2829   -0.9315
+#             base 97.5% boot/base width
+# (Intercept)     1.0688       0.9327523
+# x1              0.1667       0.8584962
+# x2              3.1181       0.9592352
 ```
 
 The estimates are the same, since we just pull from the base model. The
@@ -158,6 +158,7 @@ typical logistic regression is fractionally conservative at `N = 50`.
 An example with a zero-inflated model (from the `glmmTMB` docs):
 
 ``` r
+## we'll skip this if glmmTMB not available
 library(glmmTMB)
 
 owls <- transform(Owls,
@@ -225,26 +226,19 @@ print(zi_results)
 # SexParentMale              0.44884508    0.1134     1.2690          0.5
 # ftSatiated:SexParentMale   0.10472505   -0.1153     0.2804          1.0
 # ArrivalTime:SexParentMale -0.02139750   -0.0527    -0.0087          0.5
-#                           base p_value base 2.5% base 97.5%
-# (Intercept)                     0.0000    1.8411     3.2388
-# ftSatiated                      0.0000   -0.4079    -0.1743
-# ArrivalTime                     0.0000   -0.0960    -0.0401
-# SexParentMale                   0.3186   -0.4332     1.3309
-# ftSatiated:SexParentMale        0.1506   -0.0381     0.2475
-# ArrivalTime:SexParentMale       0.2436   -0.0574     0.0146
-#                           boot/base width
-# (Intercept)                     0.7177368
-# ftSatiated                      0.5002454
-# ArrivalTime                     0.8479791
-# SexParentMale                   0.6550388
-# ftSatiated:SexParentMale        1.3852712
-# ArrivalTime:SexParentMale       0.6116518
+#                           base p_value base 2.5% base 97.5% boot/base width
+# (Intercept)                     0.0000    1.8411     3.2388       0.7177368
+# ftSatiated                      0.0000   -0.4079    -0.1743       0.5002454
+# ArrivalTime                     0.0000   -0.0960    -0.0401       0.8479791
+# SexParentMale                   0.3186   -0.4332     1.3309       0.6550388
+# ftSatiated:SexParentMale        0.1506   -0.0381     0.2475       1.3852712
+# ArrivalTime:SexParentMale       0.2436   -0.0574     0.0146       0.6116518
 # 
 # $zi
-#              estimate boot 2.5% boot 97.5% boot p_value base p_value
-# (Intercept) -1.057534   -1.0575      -0.84          0.5            0
-#             base 2.5% base 97.5% boot/base width
-# (Intercept)    -1.242    -0.8731       0.5895082
+#              estimate boot 2.5% boot 97.5% boot p_value base p_value base 2.5%
+# (Intercept) -1.057534   -1.0575      -0.84          0.5            0    -1.242
+#             base 97.5% boot/base width
+# (Intercept)    -0.8731       0.5895082
 ```
 
 We could also have run this with the `future.apply` backend:

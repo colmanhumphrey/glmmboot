@@ -24,8 +24,9 @@ options(warnPartialMatchArgs = FALSE,
 
 For even quicker usage instructions, see the README.
 
-The general idea of this package is that you can throw nearly any
-model built in the typical R fashion. For now, we just need
+The general idea behind this package is for you to be able to throw
+in nearly any model built in the typical R fashion and get back
+a non-parametric bootstrap analysis. For now, we just need
 a somewhat standard way of extracting fixed effects, and that
 `update` works, which is nearly always the case.
 
@@ -59,7 +60,8 @@ We're assuming the `x_var` variables are fixed, and `subj` is to be treated as a
 
 Thus our base analysis is:
 
-```{r, cache=TRUE}
+```{r, eval = requireNamespace("glmmTMB", quietly = TRUE), cache=TRUE}
+## we'll skip this if glmmTMB not available
 library(glmmTMB)
 model_formula <- as.formula(y ~ x_var1 + x_var2 + x_var2 + (1 | subj))
 
@@ -72,7 +74,7 @@ We get a warning because the outcome data is proportional. Not to worry.
 Now we'll use the bootstrap. By default it'll perform block bootstrapping over the highest
 entropy random effect - but there's only one, so of course the winner is `subj`.
 
-```{r, cache=TRUE}
+```{r, eval = requireNamespace("glmmTMB", quietly = TRUE), cache=TRUE}
 bootstrap_over_subj <- bootstrap_model(base_model = base_run,
                                        base_data = test_data,
                                        resamples = 99)
@@ -81,7 +83,7 @@ For publications etc, better to run about ten thousand resamples to avoid
 noise having much of an effect. Of course 99 is far too small, only for an example.
 
 And comparing results:
-```{r, cache=TRUE}
+```{r, eval = requireNamespace("glmmTMB", quietly = TRUE), cache=TRUE}
 print(bootstrap_over_subj)
 ```
 
@@ -91,7 +93,7 @@ The above might take a long time in a real setting. If it takes far too long on 
 you can ideally run it on a bunch of computers. We don't want each computer to
 output the fully processed output, only the intermediate outcome. To do this,
 we set `return_coefs_instead = TRUE` for each run:
-```{r, cache=TRUE}
+```{r, eval = requireNamespace("glmmTMB", quietly = TRUE), cache=TRUE}
 b_list1 <- bootstrap_model(base_model = base_run,
                            base_data = test_data,
                            resamples = 29,
@@ -107,17 +109,17 @@ b_list3 <- bootstrap_model(base_model = base_run,
 ```
 Combining this is simple enough. If we've used a few, we don't want to mess around with
 even more lists, so we can enter them into the relevant function:
-```{r, cache=TRUE}
+```{r, eval = requireNamespace("glmmTMB", quietly = TRUE), cache=TRUE}
 print(combine_resampled_lists(b_list1, b_list2, b_list3))
 ```
 
 If we've run a huge number of such runs, ideally we'll combine all output to a list of lists, like
 so:
-```{r, cache=TRUE}
+```{r, eval = requireNamespace("glmmTMB", quietly = TRUE), cache=TRUE}
 list_of_lists_output <- list(b_list1, b_list2, b_list3)
 ```
 And we'll get the same result:
-```{r, cache=TRUE}
+```{r, eval = requireNamespace("glmmTMB", quietly = TRUE), cache=TRUE}
 print(combine_resampled_lists(list_of_lists_output))
 ```
 

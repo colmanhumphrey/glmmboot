@@ -2,12 +2,9 @@
 % Please edit documentation in R/bootstrap_ci.R
 \name{combine_resampled_lists}
 \alias{combine_resampled_lists}
-\alias{CombineResampledLists}
 \title{Combines output from multiple bootstrap_model calls}
 \usage{
 combine_resampled_lists(..., return_combined_list = FALSE)
-
-CombineResampledLists(..., return_combined_list = FALSE)
 }
 \arguments{
 \item{...}{List of outputs to be combined, or just a bunch of output entries

@@ -1,3 +1,13 @@
+# glmmboot 0.6.0
+
+* Removing previously deprecated functions (deprecated as of 0.4.0)
+* Adding conditional evaluation for tests and the vignette (and the readme)
+  for `glmmTMB`, in case it's not present / installable on a given system (as
+  it's only a suggested package)
+* Removing `call. = FALSE` for errors and warnings
+* adding `future.seed = TRUE` to `future.apply::future_lapply` call for better RNG
+* Minor vignette and README copy edits
+
 # glmmboot 0.5.1
 
 * Changing a `donttest` to a `dontrun` within an example.

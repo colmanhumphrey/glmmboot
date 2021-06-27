@@ -122,8 +122,7 @@ gen_resampling_index <- function(orig_list,
                                  sampled_list){
     if (length(orig_list) != length(sampled_list)) {
         stop("lists must be the same length ",
-             "(the original variables and the sampled variables)",
-             call. = FALSE)
+             "(the original variables and the sampled variables)")
     }
 
     ## coercing to character means this works for all types

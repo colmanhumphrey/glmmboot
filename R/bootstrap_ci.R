@@ -91,12 +91,12 @@ bootstrap_individual_ci <- function(base_matrix = NULL,
     if (is.null(probs)) {
         if (alpha_level < 0 | alpha_level > 0.5) {
             stop("Can't calculate a two-sided CI with this alpha value, ",
-                 "must be in (0, 0.5)", call. = FALSE)
+                 "must be in (0, 0.5)")
         }
         probs <- sort(c(alpha_level / 2, 1 - alpha_level / 2))
     }
     if (max(probs) > 1 || min(probs) < 0) {
-        stop("Probabilities should be in (0,1)", call. = FALSE)
+        stop("Probabilities should be in (0,1)")
     }
 
     base_row_names <- rownames(base_matrix)
@@ -107,7 +107,7 @@ bootstrap_individual_ci <- function(base_matrix = NULL,
     }))
 
     if (mean(name_match) != 1) {
-        stop("Naming mismatch from base to list of coefs", call. = FALSE)
+        stop("Naming mismatch from base to list of coefs")
     }
 
     resampled_ests_vecs <- lapply(1:nrow(base_matrix), function(j){
@@ -239,24 +239,6 @@ ci_variable <- function(base_est,
 }
 
 
-#' @rdname bootstrap_ci
-#' @export
-#' @param alp_level
-#' now alpha_level
-BootCI <- function(base_coef_se = NULL, # nocov start
-                   resampled_coef_se = NULL,
-                   orig_df = NULL,
-                   alp_level = 0.05,
-                   probs = NULL){
-    .Deprecated("bootstrap_ci")
-    bootstrap_ci(base_coef_se = base_coef_se,
-                 resampled_coef_se = resampled_coef_se,
-                 orig_df = orig_df,
-                 alpha_level = alp_level,
-                 probs = probs)
-} # nocov end
-
-
 #' Combines output from multiple bootstrap_model calls
 #'
 #' If you run glmmboot on e.g. a grid of computers,
@@ -333,12 +315,3 @@ combine_resampled_lists <- function(...,
     bootstrap_ci(base_coef_se = reg_base_coef,
                  resampled_coef_se = reg_resampled)
 }
-
-#' @rdname combine_resampled_lists
-#' @export
-CombineResampledLists <- function(..., # nocov start
-                                  return_combined_list = FALSE){
-    .Deprecated("combine_resampled_lists")
-    combine_resampled_lists(...,
-                            return_combined_list = return_combined_list)
-} # nocov end

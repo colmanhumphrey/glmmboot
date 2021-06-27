@@ -383,7 +383,8 @@ bootstrap_runner <- function(bootstrap_function,
                                  function(i){
                                      bootstrap_function()
                                  },
-                                 future.packages = future_packages))
+                                 future.packages = future_packages,
+                                 future.seed = TRUE))
     }
 
     if (parallelism == "parallel") {

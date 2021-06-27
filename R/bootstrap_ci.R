@@ -91,12 +91,12 @@ bootstrap_individual_ci <- function(base_matrix = NULL,
     if (is.null(probs)) {
         if (alpha_level < 0 | alpha_level > 0.5) {
             stop("Can't calculate a two-sided CI with this alpha value, ",
-                 "must be in (0, 0.5)", call. = FALSE)
+                 "must be in (0, 0.5)")
         }
         probs <- sort(c(alpha_level / 2, 1 - alpha_level / 2))
     }
     if (max(probs) > 1 || min(probs) < 0) {
-        stop("Probabilities should be in (0,1)", call. = FALSE)
+        stop("Probabilities should be in (0,1)")
     }
 
     base_row_names <- rownames(base_matrix)
@@ -107,7 +107,7 @@ bootstrap_individual_ci <- function(base_matrix = NULL,
     }))
 
     if (mean(name_match) != 1) {
-        stop("Naming mismatch from base to list of coefs", call. = FALSE)
+        stop("Naming mismatch from base to list of coefs")
     }
 
     resampled_ests_vecs <- lapply(1:nrow(base_matrix), function(j){
